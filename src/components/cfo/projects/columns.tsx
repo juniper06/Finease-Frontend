@@ -1,3 +1,4 @@
+"use client"
 import { Project } from "@/actions/cfo/project.action";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
