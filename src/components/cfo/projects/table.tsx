@@ -30,7 +30,7 @@ export const ProjectsTable = () => {
         return acc;
       }, {});
 
-      const updatedProjects = projects.map((project) => ({
+      const updatedProjects = projects.map((project: { customerId: string | number; }) => ({
         ...project,
         customerName: customerMap[project.customerId],
       }));

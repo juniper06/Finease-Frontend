@@ -109,7 +109,7 @@ export default function TotalSales({ startupId }: TotalPaymentsProps) {
       <CardContent>
         <div className="text-2xl font-bold">
           {totalSales !== null
-            ? `+ ₱${formatNumber(totalSales.toFixed(2))}`
+            ? `+ ₱${formatNumber(totalSales)}`
             : "Loading..."}
         </div>
       </CardContent>
@@ -121,7 +121,7 @@ export default function TotalSales({ startupId }: TotalPaymentsProps) {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `₱${formatNumber(value)}`} />
+             <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
             <Line
               type="monotone"
               dataKey="sales"

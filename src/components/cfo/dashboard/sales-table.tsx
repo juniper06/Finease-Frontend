@@ -21,7 +21,7 @@ export default function RecentSalesTable() {
         const payments = await getAllPaymentRecords(user.id);
         const customers = await getAllCustomers(user.id);
 
-        const customerMap = customers.reduce((acc, customer) => {
+        const customerMap = customers.reduce((acc: { [x: string]: { name: string; email: any; }; }, customer: { id: string | number; firstName: any; lastName: any; email: any; }) => {
           acc[customer.id] = {
             name: `${customer.firstName} ${customer.lastName}`,
             email: customer.email,
@@ -29,7 +29,7 @@ export default function RecentSalesTable() {
           return acc;
         }, {});
 
-        const updatedPayments = payments.map((payment) => ({
+        const updatedPayments = payments.map((payment: { customerId: string | number; }) => ({
           ...payment,
           customerName:
             customerMap[payment.customerId]?.name || "Unknown Customer",

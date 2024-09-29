@@ -16,7 +16,7 @@ export const GuestStartupTable = () => {
     try {
       setLoading(true);
       // Fetch all startups without passing userId
-      const startups = await getAllStartups(); 
+      const startups = await getAllStartups();
       console.log("Fetched Startups:", startups); // Debugging
       setData(startups);
     } catch (error) {
@@ -35,12 +35,18 @@ export const GuestStartupTable = () => {
     fetchData();
   }, [fetchData]);
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <DataTable key={tableKey} columns={startupsColumns} data={data} />
+    <DataTable<Startup, Startup>
+      key={tableKey}
+      columns={startupsColumns}
+      data={data}
+      onDelete={function (id: string): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
+    />
   );
 };

@@ -7,6 +7,36 @@ import { useToast } from "@/components/ui/use-toast";
 import { getAllExpenses, getAllProjects } from "@/actions/ceo/dashboard.action";
 import { formatNumber } from "@/lib/utils";
 
+// Define types for User, Expense, Project, and UserMap
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface Expense {
+  id: string;
+  userId: string;
+  amount: number;
+  createdAt: string;
+}
+
+interface Project {
+  id: string;
+  userId: string;
+  totalExpenses: number;
+}
+
+interface UserMap {
+  [key: string]: {
+    name: string;
+    email: string;
+    expenses: Expense[];
+    projectExpenses: number;
+  };
+}
+
 export default function ExpensesAndProjectsTable() {
   const { toast } = useToast();
   const [data, setData] = useState<any[]>([]);
@@ -22,7 +52,8 @@ export default function ExpensesAndProjectsTable() {
         getAllProjects(user.id),
       ]);
 
-      const userMap = users.reduce((acc, user) => {
+      // Initialize userMap with the correct type
+      const userMap: UserMap = users.reduce((acc, user) => {
         acc[user.id] = {
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
@@ -30,7 +61,7 @@ export default function ExpensesAndProjectsTable() {
           projectExpenses: 0,
         };
         return acc;
-      }, {});
+      }, {} as UserMap);
 
       // Aggregate regular expenses
       expenses.forEach((expense) => {
@@ -66,6 +97,7 @@ export default function ExpensesAndProjectsTable() {
               userEmail: userData.email,
               amount: userData.projectExpenses,
               type: 'project',
+              createdAt: ""
             });
           }
 

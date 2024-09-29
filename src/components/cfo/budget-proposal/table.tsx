@@ -1,6 +1,10 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import { getAllBudgetProposals, deleteBudgetProposal } from "@/actions/cfo/budget-proposal.action";
+import {
+  getAllBudgetProposals,
+  deleteBudgetProposal,
+  BudgetProposal,
+} from "@/actions/cfo/budget-proposal.action";
 import { DataTable } from "@/components/data-table";
 import { BudgetProposalColumns } from "./columns";
 import { useToast } from "@/components/ui/use-toast";
@@ -52,7 +56,8 @@ export const BudgetProposalTable = () => {
       console.error("Failed to delete budget proposal:", result.error);
       toast({
         title: "Error",
-        description: result.error || "Failed to delete budget proposal. Please try again.",
+        description:
+          result.error || "Failed to delete budget proposal. Please try again.",
         variant: "destructive",
       });
     }
@@ -63,11 +68,19 @@ export const BudgetProposalTable = () => {
   }
 
   return (
-    <DataTable
+    <DataTable<BudgetProposal, BudgetProposal>
       key={tableKey}
       columns={BudgetProposalColumns}
       data={data}
-      onDelete={handleDelete}
+      onApprove={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
+      onReject={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
+      onDelete={function (id: string): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
     />
   );
 };

@@ -19,8 +19,8 @@ import { Button } from "@/components/ui/button";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onApprove: (id: number) => Promise<void>;
-  onReject: (id: number) => Promise<void>;
+  onApprove?: (id: number) => Promise<void>;
+  onReject?: (id: number) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }
 

@@ -35,7 +35,7 @@ export const ViewBudgetProposal = ({ id }: Props) => {
       try {
         setLoading(true);
         const data = await getBudgetProposal(id);
-        if (data.error) {
+        if ('error' in data) {
           toast({
             title: "Error",
             description: data.error,

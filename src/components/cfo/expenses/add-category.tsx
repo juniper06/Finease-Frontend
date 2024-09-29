@@ -23,7 +23,7 @@ const formSchema = z.object({
 });
 
 interface AddCategoryProps {
-  onCategoryAdded: () => Promise<void>;
+  onCategoryAdded?: () => Promise<void>;
 }
 
 export const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => {
@@ -73,7 +73,7 @@ export const AddCategory: React.FC<AddCategoryProps> = ({ onCategoryAdded }) => 
         description: "Category added successfully!",
       });
       form.reset();
-      await onCategoryAdded(); // Call the callback function to refresh categories
+      await onCategoryAdded?.(); // Call the callback function to refresh categories
     }
   };
 

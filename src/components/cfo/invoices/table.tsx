@@ -4,11 +4,11 @@ import { getUserData } from "@/actions/auth/user.action";
 import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import React, { useCallback, useEffect, useState } from "react";
-import { Invoices, invoicesColumns } from "./columns";
-import { deleteInvoice, getAllInvoices } from "@/actions/cfo/invoice.action";
+import {  invoicesColumns } from "./columns";
+import { deleteInvoice, getAllInvoices, Invoice } from "@/actions/cfo/invoice.action";
 
 export const InvoiceTable = () => {
-  const [data, setData] = useState<Invoices[]>([]);
+  const [data, setData] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [tableKey, setTableKey] = useState(0);
@@ -22,12 +22,12 @@ export const InvoiceTable = () => {
         getAllCustomers(user.id),
       ]);
 
-      const customerMap = customers.reduce((acc, customer) => {
+      const customerMap = customers.reduce((acc: { [x: string]: string; }, customer: { id: string | number; firstName: any; lastName: any; }) => {
         acc[customer.id] = `${customer.firstName} ${customer.lastName}`;
         return acc;
       }, {});
 
-      const updatedInvoices = invoices.map((invoice) => ({
+      const updatedInvoices = invoices.map((invoice: { customerId: string | number; }) => ({
         ...invoice,
         customerName: customerMap[invoice.customerId],
       }));

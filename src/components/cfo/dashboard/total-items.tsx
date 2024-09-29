@@ -100,7 +100,7 @@ export default function TotalItems() {
           <LineChart data={monthlyItems}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" tickFormatter={(value) => value.slice(0, 3)} />
-            <Tooltip formatter={(value) => `${formatNumber(value)}`}/>
+            <Tooltip formatter={(value) => `${formatNumber(Number(value))}`}/>
             <Line type="monotone" dataKey="items" stroke="#8884d8" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>

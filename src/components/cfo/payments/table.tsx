@@ -20,12 +20,12 @@ export const PaymentsTable = () => {
       const payments = await getAllPaymentRecords(user.id);
       const customers = await getAllCustomers(user.id);
 
-      const customerMap = customers.reduce((acc, customer) => {
+      const customerMap = customers.reduce((acc: { [x: string]: string; }, customer: { id: string | number; firstName: any; lastName: any; }) => {
         acc[customer.id] = `${customer.firstName} ${customer.lastName}`;
         return acc;
       }, {});
 
-      const updatedPayments = payments.map((payment) => ({
+      const updatedPayments = payments.map((payment: { customerId: string | number; invoices: { invoiceNumber: any; }; }) => ({
         ...payment,
         customerName: customerMap[payment.customerId],
         invoiceNumber: payment.invoices?.invoiceNumber,

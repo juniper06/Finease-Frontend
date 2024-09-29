@@ -126,7 +126,7 @@ export const EditProjectForm = ({ projectId }: { projectId: string }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-
+  
       const userData = await getUserData();
       if ("error" in userData) {
         toast({
@@ -134,7 +134,7 @@ export const EditProjectForm = ({ projectId }: { projectId: string }) => {
         });
       } else {
         setUser(userData);
-
+  
         const fetchedCustomers = await getAllCustomers(userData.id);
         if ("error" in fetchedCustomers) {
           toast({
@@ -144,7 +144,7 @@ export const EditProjectForm = ({ projectId }: { projectId: string }) => {
           setCustomers(fetchedCustomers);
         }
       }
-
+  
       if (projectId) {
         const fetchedProject = await getProject(projectId);
         if ("error" in fetchedProject) {
@@ -152,7 +152,14 @@ export const EditProjectForm = ({ projectId }: { projectId: string }) => {
             description: fetchedProject.error,
           });
         } else {
-          form.reset(fetchedProject);
+          // Ensure correct property access
+          const projectData = {
+            ...fetchedProject,
+            // Ensure customerId is a string
+            customerId: String(fetchedProject.customerId),
+            // Add other transformations as necessary
+          };
+          form.reset(projectData);
         }
       }
     } catch (error) {

@@ -3,8 +3,8 @@ import { getUserData } from "@/actions/auth/user.action";
 import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import React, { useCallback, useEffect, useState } from "react";
-import { Expenses, expensesColumns } from "./columns";
-import { deleteExpenses, getAllExpenses } from "@/actions/cfo/expenses.action";
+import { expensesColumns } from "./columns";
+import { deleteExpenses, Expenses, getAllExpenses } from "@/actions/cfo/expenses.action";
 import { getAllCategory } from "@/actions/cfo/category.action";
 
 export const ExpensesTable = () => {
@@ -21,11 +21,11 @@ export const ExpensesTable = () => {
         getAllExpenses(user.id),
         getAllCategory(user.id),
       ]);
-      const categoryMap = categories.reduce((acc, category) => {
+      const categoryMap = categories.reduce((acc: { [x: string]: any; }, category: { id: string | number; categoryName: any; }) => {
         acc[category.id] = category.categoryName;
         return acc;
       }, {});
-      const updatedExpenses = expenses.map((expense) => ({
+      const updatedExpenses = expenses.map((expense: { categoryId: string | number; }) => ({
         ...expense,
         categoryName: categoryMap[expense.categoryId],
       }));

@@ -51,12 +51,16 @@ export const BudgetProposalTable = () => {
     <DataTable<BudgetProposal, BudgetProposal>
       key={tableKey}
       columns={BudgetProposalColumns}
-      data={data} onApprove={function (id: number): Promise<void> {
+      data={data}
+      onApprove={function (id: number): Promise<void> {
         throw new Error("Function not implemented.");
-      } } onReject={function (id: number): Promise<void> {
+      }}
+      onReject={function (id: number): Promise<void> {
         throw new Error("Function not implemented.");
-      } } onDelete={function (id: string): Promise<void> {
+      }}
+      onDelete={function (id: string): Promise<void> {
         throw new Error("Function not implemented.");
-      } }    />
+      }}
+    />
   );
 };

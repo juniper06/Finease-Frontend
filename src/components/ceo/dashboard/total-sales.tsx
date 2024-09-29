@@ -99,7 +99,7 @@ export default function TotalSales() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {totalSales !== null ? `+ ₱${formatNumber(totalSales.toFixed(2))}` : "Loading..."}
+          {totalSales !== null ? `+ ₱${formatNumber(totalSales)}` : "Loading..."}
         </div>
       </CardContent>
       <CardContent>
@@ -110,7 +110,7 @@ export default function TotalSales() {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `₱${formatNumber(value)}`} />
+            <Tooltip formatter={(value) => `₱${formatNumber(Number(value))}`} />
             <Line
               type="monotone"
               dataKey="sales"

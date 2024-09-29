@@ -1,13 +1,13 @@
 "use client";
-import { Items, itemsColumns } from "@/components/cfo/items/columns";
+import {itemsColumns } from "@/components/cfo/items/columns";
 import { DataTable } from "@/components/data-table";
 import React, { useState, useEffect, useCallback } from "react";
-import { deleteItem, getAllitems } from "@/actions/cfo/item.action";
+import { deleteItem, getAllitems, Item } from "@/actions/cfo/item.action";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 
 export const ItemTable = () => {
-  const [data, setData] = useState<Items[]>([]);
+  const [data, setData] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [tableKey, setTableKey] = useState(0);

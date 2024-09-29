@@ -116,7 +116,7 @@ export const ProjectsColumns: ColumnDef<Project>[] = [
     cell: ({ row }) => (
       <Link href={`/projects/view-project/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {formatNumber(row.getValue("totalExpenses") as string)}
+          {formatNumber(isNaN(parseFloat(row.getValue("totalExpenses"))) ? 0 : parseFloat(row.getValue("totalExpenses")))}
         </div>
       </Link>
     ),

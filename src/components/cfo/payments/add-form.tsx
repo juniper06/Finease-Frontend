@@ -125,7 +125,7 @@ export const AddPaymentRecord = () => {
   }, [toast]);
 
   useEffect(() => {
-    const fetchInvoices = async (customerId) => {
+    const fetchInvoices = async (customerId: string) => {
       try {
         const fetchedInvoices = await getInvoicesByCustomerId(customerId);
         setInvoices(fetchedInvoices);
@@ -151,17 +151,17 @@ export const AddPaymentRecord = () => {
   }, [form]);
 
   useEffect(() => {
-    const fetchInvoices = async (customerId) => {
+    const fetchInvoices = async (customerId: string) => {
       try {
         const fetchedInvoices = await getInvoicesByCustomerId(customerId);
         const unpaidInvoices = fetchedInvoices.filter(
-          (invoice) => invoice.status !== "paid"
+          (invoice: { status: string; }) => invoice.status !== "paid"
         );
         setInvoices(unpaidInvoices);
 
         form.setValue(
           "payments",
-          unpaidInvoices.map((invoice) => ({
+          unpaidInvoices.map((invoice: { id: any; }) => ({
             invoiceId: invoice.id,
             amount: 0,
           }))
@@ -409,7 +409,7 @@ export const AddPaymentRecord = () => {
                               field.onChange(newAmount);
                               form.setValue(
                                 `payments.${index}.invoiceId`,
-                                invoice.id
+                                Number(invoice.id)
                               );
 
                               const currentPayments =
@@ -435,7 +435,7 @@ export const AddPaymentRecord = () => {
                 Total
               </TableCell>
               <TableCell className="text-right">
-                ₱{formatNumber(total.toFixed(2))}
+                ₱{formatNumber(total)}
               </TableCell>
             </TableRow>
           </TableFooter>

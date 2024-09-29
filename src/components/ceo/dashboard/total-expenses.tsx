@@ -106,7 +106,7 @@ export default function TotalExpenses() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {isLoading ? "Loading..." : `- ₱${formatNumber(totalExpenses.toFixed(2))}`}
+          {isLoading ? "Loading..." : `- ₱${formatNumber(totalExpenses)}`}
         </div>
       </CardContent>
       <CardContent>
@@ -114,7 +114,7 @@ export default function TotalExpenses() {
           <LineChart data={monthlyExpenses}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" tickFormatter={(value) => value.slice(0, 3)} />
-            <Tooltip formatter={(value) => `₱${formatNumber(value)}`} />
+            <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
             <Line type="monotone" dataKey="expenses" stroke="#8884d8" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>

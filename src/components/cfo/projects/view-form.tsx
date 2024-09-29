@@ -29,7 +29,7 @@ export const ViewSpecificProject = ({ id }: Props) => {
       try {
         setLoading(true);
         const data = await getProject(id);
-        if (data.error) {
+        if ('error' in data) {
           toast({
             title: "Error",
             description: data.error,

@@ -11,9 +11,10 @@ export const formatDate = (dateString: string): string => {
   return format(date, "MMMM do, yyyy");
 };
 
-export const formatNumber = (number) => {
-  return new Intl.NumberFormat('en-US').format(number);
+export const formatNumber = (number: number) => {
+  return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 2 }).format(number);
 };
+
 
 export const generateStartupCode = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

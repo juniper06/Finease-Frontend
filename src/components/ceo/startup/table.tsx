@@ -3,7 +3,11 @@ import { DataTable } from "@/components/data-table";
 import React, { useState, useEffect, useCallback } from "react";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
-import { deleteStartup, getAllStartups, Startup } from "@/actions/ceo/startup.action";
+import {
+  deleteStartup,
+  getAllStartups,
+  Startup,
+} from "@/actions/ceo/startup.action";
 import { startupsColumns } from "./columns";
 
 export const StartupTable = () => {
@@ -50,7 +54,8 @@ export const StartupTable = () => {
       console.error("Failed to delete startup:", result.error);
       toast({
         title: "Error",
-        description: result.error || "Failed to delete startup. Please try again.",
+        description:
+          result.error || "Failed to delete startup. Please try again.",
         variant: "destructive",
       });
     }
@@ -61,6 +66,16 @@ export const StartupTable = () => {
   }
 
   return (
-    <DataTable columns={startupsColumns} data={data} onDelete={handleDelete} />
+    <DataTable
+      columns={startupsColumns}
+      data={data}
+      onDelete={handleDelete}
+      onApprove={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
+      onReject={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      }}
+    />
   );
 };

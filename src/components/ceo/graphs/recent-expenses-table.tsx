@@ -7,6 +7,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { formatNumber } from "@/lib/utils";
 import { getAllExpenses, getAllProjectRecords } from "@/actions/ceo/graphs.action";
 
+interface UserExpense {
+  id: string; // or number, depending on your user ID type
+  name: string;
+  email: string;
+  expenses: any[]; // replace `any` with a more specific type if possible
+  projectExpenses: number;
+}
+
 interface RecentExpensesProps {
   startupId: number;
 }
@@ -28,8 +36,9 @@ export default function RecentExpensesTable({
         getAllProjectRecords(startupId),
       ]);
 
-      const userMap = users.reduce((acc, user) => {
+      const userMap = users.reduce<Record<string, UserExpense>>((acc, user) => {
         acc[user.id] = {
+          id: user.id,  // Include the id here
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           expenses: [],
@@ -39,17 +48,17 @@ export default function RecentExpensesTable({
       }, {});
 
       // Aggregate regular expenses
-      expenses.forEach((expense) => {
+      expenses.forEach((expense: { userId: string | number; }) => {
         if (userMap[expense.userId]) {
           userMap[expense.userId].expenses.push(expense);
         }
       });
 
       // Aggregate project expenses
-      projects.forEach((project) => {
+      projects.forEach((project: { userId: string | number; totalExpenses: any; }) => {
         if (userMap[project.userId]) {
           userMap[project.userId].projectExpenses += parseFloat(
-            project.totalExpenses || 0
+            project.totalExpenses || "0"
           );
         }
       });

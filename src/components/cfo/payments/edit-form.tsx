@@ -380,7 +380,7 @@ export const EditPaymentRecordForm = ({ paymentId }: { paymentId: string }) => {
                               field.onChange(newAmount);
                               form.setValue(
                                 `payments.${index}.invoiceId`,
-                                invoice.id
+                                Number(invoice.id)
                               );
                               const currentPayments =
                                 form.getValues("payments");

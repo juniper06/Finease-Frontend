@@ -1,11 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUserData, getAllUser } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 import { getAllPaymentRecords } from "@/actions/ceo/dashboard.action";
 import { formatNumber } from "@/lib/utils";
+
+// Define the interface for the user map
+interface UserMap {
+  [key: string]: {
+    name: string;
+    email: string;
+  };
+}
 
 export default function RecentSalesTable() {
   const { toast } = useToast();
@@ -20,7 +28,7 @@ export default function RecentSalesTable() {
         const payments = await getAllPaymentRecords(user.id);
         const users = await getAllUser(user.id);
 
-        const userMap = users.reduce((acc, user) => {
+        const userMap: UserMap = users.reduce((acc: UserMap, user) => {
           acc[user.id] = {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,

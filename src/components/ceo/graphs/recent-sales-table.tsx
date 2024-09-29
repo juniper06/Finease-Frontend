@@ -7,6 +7,20 @@ import { useToast } from "@/components/ui/use-toast";
 import { formatNumber } from "@/lib/utils";
 import { getAllPaymentRecords } from "@/actions/ceo/graphs.action";
 
+interface User {
+  id: string; // or number, depending on your user ID type
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+interface UserMap {
+  [key: string]: {
+    name: string;
+    email: string;
+  };
+}
+
 interface RecentSalesProps {
   startupId: number;
 }
@@ -24,15 +38,15 @@ export default function RecentSalesTable({ startupId }: RecentSalesProps) {
         const payments = await getAllPaymentRecords(startupId);
         const users = await getAllUser(user.id);
 
-        const userMap = users.reduce((acc, user) => {
+        const userMap: UserMap = users.reduce((acc, user: User) => {
           acc[user.id] = {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
           };
           return acc;
-        }, {});
+        }, {} as UserMap); // Type assertion here
 
-        const updatedPayments = payments.map((payment) => ({
+        const updatedPayments = payments.map((payment: { userId: string | number; }) => ({
           ...payment,
           userName: userMap[payment.userId]?.name || "Unknown User",
           userEmail: userMap[payment.userId]?.email || "N/A",
@@ -52,7 +66,7 @@ export default function RecentSalesTable({ startupId }: RecentSalesProps) {
     }
 
     fetchData();
-  }, [toast]);
+  }, [toast, startupId]);
 
   return (
     <Card x-chunk="dashboard-01-chunk-5">

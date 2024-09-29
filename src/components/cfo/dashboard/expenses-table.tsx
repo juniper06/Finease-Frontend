@@ -25,14 +25,22 @@ export default function ExpensesAndProjectsTable() {
         getAllCategory(user.id),
         getAllProjects(user.id), // Fetch projects
       ]);
-      const categoryMap = categories.reduce((acc, category) => {
-        acc[category.id] = category.categoryName;
-        return acc;
-      }, {});
-      const updatedExpenses = expenses.map((expense) => ({
-        ...expense,
-        categoryName: categoryMap[expense.categoryId] || "Unknown Category",
-      }));
+      const categoryMap = categories.reduce(
+        (
+          acc: { [x: string]: any },
+          category: { id: string | number; categoryName: any }
+        ) => {
+          acc[category.id] = category.categoryName;
+          return acc;
+        },
+        {}
+      );
+      const updatedExpenses = expenses.map(
+        (expense: { categoryId: string | number }) => ({
+          ...expense,
+          categoryName: categoryMap[expense.categoryId] || "Unknown Category",
+        })
+      );
       setExpensesData(updatedExpenses);
       setProjectsData(projects); // Set projects data
     } catch (error) {
@@ -78,7 +86,7 @@ export default function ExpensesAndProjectsTable() {
                   </p>
                 </div>
                 <div className="ml-auto font-medium">
-                  - ₱{formatNumber(parseFloat(expense.amount).toFixed(2))}
+                  - ₱{formatNumber(parseFloat(expense.amount))}
                 </div>
               </div>
             ))}
@@ -100,7 +108,7 @@ export default function ExpensesAndProjectsTable() {
                 </div>
                 <div className="ml-auto font-medium">
                   - ₱
-                  {formatNumber(parseFloat(project.totalExpenses).toFixed(2))}
+                  {formatNumber(parseFloat(project.totalExpenses))}
                 </div>
               </div>
             ))}

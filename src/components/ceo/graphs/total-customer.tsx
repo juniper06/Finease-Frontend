@@ -115,7 +115,7 @@ export default function TotalCustomer({ startupId }: TotalCustomersProps) {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `${formatNumber(value)}`} />
+            <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
             <Line
               type="monotone"
               dataKey="customers"

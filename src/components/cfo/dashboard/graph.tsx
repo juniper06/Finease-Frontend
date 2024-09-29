@@ -10,9 +10,15 @@ import { getAllExpenses } from "@/actions/cfo/expenses.action";
 import { getAllPaymentRecords } from "@/actions/cfo/payment.action";
 import { getAllProjects } from "@/actions/cfo/project.action";
 
+interface GraphData {
+  name: string;
+  expenses: number;
+  sales: number;
+}
+
 export function TotalGraph() {
   const { toast } = useToast();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<GraphData[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
@@ -31,7 +37,7 @@ export function TotalGraph() {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
       ];
 
-      const expenseData = expenses.reduce((acc, expense) => {
+      const expenseData = expenses.reduce((acc: number[], expense: { createdAt: string | number | Date; amount: string; }) => {
         const month = new Date(expense.createdAt).getMonth();
         if (!acc[month]) acc[month] = 0;
         acc[month] += parseFloat(expense.amount);
@@ -39,12 +45,12 @@ export function TotalGraph() {
       }, new Array(12).fill(0));
 
       // Include project expenses
-      projects.forEach(project => {
+      projects.forEach((project: { createdAt: string | number | Date; totalExpenses: any; }) => {
         const month = new Date(project.createdAt).getMonth();
         expenseData[month] += parseFloat(project.totalExpenses || 0);
       });
 
-      const paymentData = payments.reduce((acc, payment) => {
+      const paymentData = payments.reduce((acc: number[], payment: { createdAt: string | number | Date; totalAmount: string; }) => {
         const month = new Date(payment.createdAt).getMonth();
         if (!acc[month]) acc[month] = 0;
         acc[month] += parseFloat(payment.totalAmount);
@@ -86,12 +92,12 @@ export function TotalGraph() {
         <div style={{ backgroundColor: '#ff4d4f', width: '10px', height: '10px', marginRight: '10px' }}></div>
         <span>Total Expenses</span>
       </div>
-      <div style={{ marginBottom: '10px' }}>₱{formatNumber(totalExpenses.toFixed(2))}</div>
+      <div style={{ marginBottom: '10px' }}>₱{formatNumber(totalExpenses)}</div>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <div style={{ backgroundColor: '#4caf50', width: '10px', height: '10px', marginRight: '10px' }}></div>
         <span>Total Sales</span>
       </div>
-      <div>₱{formatNumber(totalSales.toFixed(2))}</div>
+      <div>₱{formatNumber(totalSales)}</div>
     </div>
   );
 
@@ -104,7 +110,7 @@ export function TotalGraph() {
         <BarChart data={data}>
           <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
           <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₱${formatNumber(value)}`} />
-          <Tooltip formatter={(value) => `₱${formatNumber(value)}`} />
+          <Tooltip formatter={(value) => `₱${formatNumber(Number(value))}`} />
           <Legend verticalAlign="top" align="right" layout="vertical" content={renderCustomLegend} />
           <Bar dataKey="expenses" fill="#ff4d4f" radius={[4, 4, 0, 0]} name="Total Expenses" />
           <Bar dataKey="sales" fill="#4caf50" radius={[4, 4, 0, 0]} name="Total Sales" />

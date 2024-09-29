@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import {
   BriefcaseBusiness,
@@ -167,7 +167,7 @@ export const GuestViewStartup = ({ id }: Props) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {startup.cfoUsers.map((user, index) => (
+                {startup.cfoUsers.map((user: { firstName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; lastName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; email: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }, index: Key | null | undefined) => (
                   <TableRow key={index}>
                     <TableCell>
                       {user.firstName} {user.lastName}

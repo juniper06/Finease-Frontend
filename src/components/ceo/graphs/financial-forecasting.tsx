@@ -60,26 +60,26 @@ export function FinancialForecasting({ startupId }: TotalForecastingProps) {
       }
 
       // Process regular expenses
-      const expenseData = expenses.reduce((acc, expense) => {
+      const expenseData = expenses.reduce((acc: number[], expense: { createdAt: string | number | Date; amount: string; }) => {
         const month = new Date(expense.createdAt).getMonth();
         acc[month] = (acc[month] || 0) + parseFloat(expense.amount);
         return acc;
       }, Array(12).fill(0));
 
       // Process project expenses
-      const projectExpenseData = projects.reduce((acc, project) => {
+      const projectExpenseData = projects.reduce((acc: number[], project: { createdAt: string | number | Date; totalExpenses: any; }) => {
         const month = new Date(project.createdAt).getMonth();
-        acc[month] = (acc[month] || 0) + parseFloat(project.totalExpenses || 0);
+        acc[month] = (acc[month] || 0) + parseFloat(project.totalExpenses || "0");
         return acc;
       }, Array(12).fill(0));
 
       // Combine regular and project expenses
       const totalExpenseData = expenseData.map(
-        (expense, index) => expense + projectExpenseData[index]
+        (expense: any, index: string | number) => expense + projectExpenseData[index]
       );
 
       // Process payments (revenues)
-      const paymentData = payments.reduce((acc, payment) => {
+      const paymentData = payments.reduce((acc: number[], payment: { createdAt: string | number | Date; totalAmount: string; }) => {
         const month = new Date(payment.createdAt).getMonth();
         acc[month] = (acc[month] || 0) + parseFloat(payment.totalAmount);
         return acc;
@@ -87,13 +87,13 @@ export function FinancialForecasting({ startupId }: TotalForecastingProps) {
 
       // Calculate monthly net income (revenue - expenses)
       const monthlyNet = paymentData.map(
-        (revenue, index) => revenue - totalExpenseData[index]
+        (revenue: number, index: string | number) => revenue - totalExpenseData[index]
       );
-      const totalFunds = monthlyNet.reduce((acc, net) => acc + net, 0);
+      const totalFunds = monthlyNet.reduce((acc: any, net: any) => acc + net, 0);
 
       // Calculate the average monthly burn rate
       const averageMonthlyBurnRate =
-        totalExpenseData.reduce((a, b) => a + b, 0) / 12;
+        totalExpenseData.reduce((a: any, b: any) => a + b, 0) / 12;
       const calculatedTotalRunway = Number(
         (totalFunds / averageMonthlyBurnRate).toFixed(2)
       );

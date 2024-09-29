@@ -48,29 +48,26 @@ export function FinancialForecasting() {
         getAllExpenses(user.id),
         getAllPaymentRecords(user.id),
       ]);
-
-      if (expenses.error || payments.error) {
-        throw new Error("Error fetching financial data");
-      }
-
+  
+      // Continue processing the expenses and payments as arrays
       const expenseData = expenses.reduce((acc, expense) => {
         const month = new Date(expense.createdAt).getMonth();
         acc[month] = (acc[month] || 0) + parseFloat(expense.amount);
         return acc;
       }, Array(12).fill(0));
-
+  
       const paymentData = payments.reduce((acc, payment) => {
         const month = new Date(payment.createdAt).getMonth();
         acc[month] = (acc[month] || 0) + parseFloat(payment.totalAmount);
         return acc;
       }, Array(12).fill(0));
-
-      const monthlyNet = paymentData.map((revenue, index) => revenue - expenseData[index]);
-      const totalFunds = monthlyNet.reduce((acc, net) => acc + net, 0);
-
-      const averageMonthlyBurnRate = expenseData.reduce((a, b) => a + b, 0) / 12;
+  
+      const monthlyNet = paymentData.map((revenue: number, index: string | number) => revenue - expenseData[index]);
+      const totalFunds = monthlyNet.reduce((acc: any, net: any) => acc + net, 0);
+  
+      const averageMonthlyBurnRate = expenseData.reduce((a: any, b: any) => a + b, 0) / 12;
       const calculatedTotalRunway = Number((totalFunds / averageMonthlyBurnRate).toFixed(2));
-
+  
       setChartData([{ runway: calculatedTotalRunway, fill: "var(--color-runway)" }]);
       setTotalRunway(calculatedTotalRunway);
     } catch (error) {
@@ -83,7 +80,7 @@ export function FinancialForecasting() {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast]);  
 
   useEffect(() => {
     fetchData();
