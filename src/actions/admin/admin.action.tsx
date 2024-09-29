@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 // Fetch pending CEO requests
 export async function getPendingCEOs() {
-  const response = await useFetch(`${process.env.SERVER_API}/admin/requests`, {
+  const response = await fetch(`${process.env.SERVER_API}/admin/requests`, {
     method: "GET",
   });
   if (!response.ok) {
@@ -17,7 +16,7 @@ export async function getPendingCEOs() {
 // Approve a CEO request
 export async function approveUser(id: number) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/admin/approve/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/admin/approve/${id}`, {
       method: "PATCH",
     });
 
@@ -40,7 +39,7 @@ export async function approveUser(id: number) {
 // Reject a CEO request
 export async function rejectUser(id: number) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/admin/reject/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/admin/reject/${id}`, {
       method: "PATCH",
     });
 
