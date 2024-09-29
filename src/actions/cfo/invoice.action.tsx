@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addInvoice(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/invoice`, {
+  const response = await fetch(`${process.env.SERVER_API}/invoice`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addInvoice(values: any) {
 }
 
 export async function getAllInvoices(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/invoice`, {
+  const response = await fetch(`${process.env.SERVER_API}/invoice`, {
     method: "GET",
   });
   if (response.status === 500) {
@@ -30,7 +29,7 @@ export async function getAllInvoices(userId: string) {
 }
 
 export async function getInvoice(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/invoice/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/invoice/${id}`, {
     method: "GET",
   });
   if (response.status === 500) {
@@ -48,7 +47,7 @@ export async function getInvoice(id: string) {
 
 export async function deleteInvoice(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/invoice/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/invoice/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -74,7 +73,7 @@ export async function deleteInvoice(id: string) {
 
 export async function editInvoice(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/invoice/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/invoice/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });
@@ -100,7 +99,7 @@ export async function editInvoice(id: string, values: any) {
 }
 
 export async function getInvoicesByCustomerId(customerId: string) {
-  const response = await useFetch(
+  const response = await fetch(
     `${process.env.SERVER_API}/invoice/customer/${customerId}`,
     {
       method: "GET",

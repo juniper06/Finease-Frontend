@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function getAllStartups() {
-  const response = await useFetch(`${process.env.SERVER_API}/startup`, {
+  const response = await fetch(`${process.env.SERVER_API}/startup`, {
     method: "GET",
   });
 

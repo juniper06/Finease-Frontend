@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addProject(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/project`, {
+  const response = await fetch(`${process.env.SERVER_API}/project`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addProject(values: any) {
 }
 
 export async function getAllProjects(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/project`, {
+  const response = await fetch(`${process.env.SERVER_API}/project`, {
     method: "GET",
   });
   if (response.status === 500) {
@@ -30,7 +29,7 @@ export async function getAllProjects(userId: string) {
 }
 
 export async function getProject(id: string): Promise<Project | { error: string }> {
-  const response = await useFetch(`${process.env.SERVER_API}/project/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
     method: "GET",
   });
 
@@ -52,7 +51,7 @@ export async function getProject(id: string): Promise<Project | { error: string 
 
 export async function deleteProject(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/project/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -78,7 +77,7 @@ export async function deleteProject(id: string) {
 
 export async function editProject(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/project/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });

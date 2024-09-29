@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function getAllPaymentRecords(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/payment/ceo/${ceoId}`,
       {
         method: "GET",
@@ -25,7 +24,7 @@ export async function getAllPaymentRecords(ceoId: number) {
 
 export async function getAllExpenses(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/expenses/ceo/${ceoId}`,
       {
         method: "GET",
@@ -46,7 +45,7 @@ export async function getAllExpenses(ceoId: number) {
 
 export async function getAllCustomers(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/customer/ceo/${ceoId}`,
       {
         method: "GET",
@@ -67,7 +66,7 @@ export async function getAllCustomers(ceoId: number) {
 
 export async function getAllitems(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/item/ceo/${ceoId}`,
       {
         method: "GET",
@@ -88,7 +87,7 @@ export async function getAllitems(ceoId: number) {
 
 export async function getAllProjects(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/project/ceo/${ceoId}`,
       {
         method: "GET",

@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addExpenses(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/expenses`, {
+  const response = await fetch(`${process.env.SERVER_API}/expenses`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addExpenses(values: any) {
 }
 
 export async function getAllExpenses(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/expenses`, {
+  const response = await fetch(`${process.env.SERVER_API}/expenses`, {
     method: "GET",
   });
 
@@ -31,7 +30,7 @@ export async function getAllExpenses(userId: string) {
 }
 
 export async function getExpenses(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/expenses/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
     method: "GET",
   });
 
@@ -51,7 +50,7 @@ export async function getExpenses(id: string) {
 
 export async function deleteExpenses(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/expenses/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -77,7 +76,7 @@ export async function deleteExpenses(id: string) {
 
 export async function editExpenses(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/expenses/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });

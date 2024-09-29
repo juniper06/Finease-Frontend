@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addBudgetProposal(values: any) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal`,
       {
         method: "POST",
@@ -28,7 +27,7 @@ export async function addBudgetProposal(values: any) {
 }
 
 export async function getAllBudgetProposals(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/budget-proposal`, {
+  const response = await fetch(`${process.env.SERVER_API}/budget-proposal`, {
     method: "GET",
   });
 
@@ -44,7 +43,7 @@ export async function getAllBudgetProposals(userId: string) {
 }
 
 export async function getBudgetProposal(id: string): Promise<BudgetProposal | { error: string }> {
-  const response = await useFetch(`${process.env.SERVER_API}/budget-proposal/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/budget-proposal/${id}`, {
     method: "GET",
   });
 
@@ -66,7 +65,7 @@ export async function getBudgetProposal(id: string): Promise<BudgetProposal | { 
 
 export async function deleteBudgetProposal(id: string) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/${id}`,
       {
         method: "DELETE",

@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addCustomer(values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/customer`, {
+    const response = await fetch(`${process.env.SERVER_API}/customer`, {
       method: "POST",
       body: JSON.stringify(values),
     });
@@ -29,7 +28,7 @@ export async function addCustomer(values: any) {
 }
 
 export async function getAllCustomers(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/customer`, {
+  const response = await fetch(`${process.env.SERVER_API}/customer`, {
     method: "GET",
   });
 
@@ -45,7 +44,7 @@ export async function getAllCustomers(userId: string) {
 }
 
 export async function getCustomer(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/customer/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
     method: "GET",
   });
 
@@ -65,7 +64,7 @@ export async function getCustomer(id: string) {
 
 export async function deleteCustomer(id: string) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/customer/${id}`,
       {
         method: "DELETE",
@@ -94,7 +93,7 @@ export async function deleteCustomer(id: string) {
 
 export async function editCustomer(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/customer/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });

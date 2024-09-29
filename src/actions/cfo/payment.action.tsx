@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addPaymentRecord(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/payment`, {
+  const response = await fetch(`${process.env.SERVER_API}/payment`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addPaymentRecord(values: any) {
 }
 
 export async function getAllPaymentRecords(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/payment`, {
+  const response = await fetch(`${process.env.SERVER_API}/payment`, {
     method: "GET",
   });
   if (response.status === 500) {
@@ -30,7 +29,7 @@ export async function getAllPaymentRecords(userId: string) {
 }
 
 export async function getPaymentRecord(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/payment/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
     method: "GET",
   });
   if (response.status === 500) {
@@ -48,7 +47,7 @@ export async function getPaymentRecord(id: string) {
 
 export async function deletePaymentRecord(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/payment/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -74,7 +73,7 @@ export async function deletePaymentRecord(id: string) {
 
 export async function editPaymentRecord(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/payment/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });

@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function getAllBudgetProposals(ceoId: number) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/ceo/${ceoId}`,
       {
         method: "GET",
@@ -24,7 +23,7 @@ export async function getAllBudgetProposals(ceoId: number) {
 
 export async function editBudgetProposalStatus(id: string, status: string, ceoComment: string) {
   try {
-    const response = await useFetch(
+    const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/${id}/status`,
       {
         method: "PATCH",

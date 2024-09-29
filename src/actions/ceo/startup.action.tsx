@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addStartup(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/startup`, {
+  const response = await fetch(`${process.env.SERVER_API}/startup`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addStartup(values: any) {
 }
 
 export async function getAllStartups(userId: number) { // Ensure userId is a number
-  const response = await useFetch(`${process.env.SERVER_API}/startup`, {
+  const response = await fetch(`${process.env.SERVER_API}/startup`, {
     method: "GET",
   });
 
@@ -35,7 +34,7 @@ export async function getAllStartups(userId: number) { // Ensure userId is a num
 
 export async function deleteStartup(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/startup/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -60,7 +59,7 @@ export async function deleteStartup(id: string) {
 }
 
 export async function getStartup(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/startup/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
     method: "GET",
   });
 
@@ -80,7 +79,7 @@ export async function getStartup(id: string) {
 
 export async function editStartup(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/startup/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });
@@ -106,7 +105,7 @@ export async function editStartup(id: string, values: any) {
 }
 
 export async function getCFOsForStartup(startupId: number) {
-  const response = await useFetch(`${process.env.SERVER_API}/startup/${startupId}/cfo`, {
+  const response = await fetch(`${process.env.SERVER_API}/startup/${startupId}/cfo`, {
     method: "GET",
   });
 

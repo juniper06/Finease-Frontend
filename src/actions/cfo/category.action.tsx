@@ -1,9 +1,8 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addCategory(values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/category`, {
+    const response = await fetch(`${process.env.SERVER_API}/category`, {
       method: "POST",
       body: JSON.stringify(values),
     });
@@ -29,7 +28,7 @@ export async function addCategory(values: any) {
 }
 
 export async function getAllCategory(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/category`, {
+  const response = await fetch(`${process.env.SERVER_API}/category`, {
     method: "GET",
   });
 
@@ -45,7 +44,7 @@ export async function getAllCategory(userId: string) {
 }
 
 export async function getCategory(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/category/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/category/${id}`, {
     method: "GET",
   });
 
@@ -65,7 +64,7 @@ export async function getCategory(id: string) {
 
 export async function deleteCategory(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/category/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/category/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {

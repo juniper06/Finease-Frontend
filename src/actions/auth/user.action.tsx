@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addUser(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/user/create`, {
+  const response = await fetch(`${process.env.SERVER_API}/user/create`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addUser(values: any) {
 }
 
 export async function getByAuth() {
-  const response = await useFetch(`${process.env.SERVER_API}/user/get-by-auth`);
+  const response = await fetch(`${process.env.SERVER_API}/user/get-by-auth`);
   return response.json();
 }
 
@@ -29,7 +28,7 @@ export async function getUserData() {
 
 export async function getAllUser(userId: string): Promise<User[]> {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/user`, {
+    const response = await fetch(`${process.env.SERVER_API}/user`, {
       method: "GET",
     });
 
@@ -47,7 +46,7 @@ export async function getAllUser(userId: string): Promise<User[]> {
 
 export async function editUser(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/user/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/user/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });
@@ -74,7 +73,7 @@ export async function editUser(id: string, values: any) {
 
 export async function deleteUser(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/user/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/user/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {

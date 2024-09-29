@@ -1,8 +1,7 @@
 "use server";
-import { useFetch } from "@/lib/fetch";
 
 export async function addItem(values: any) {
-  const response = await useFetch(`${process.env.SERVER_API}/item`, {
+  const response = await fetch(`${process.env.SERVER_API}/item`, {
     method: "POST",
     body: JSON.stringify(values),
   });
@@ -15,7 +14,7 @@ export async function addItem(values: any) {
 }
 
 export async function getAllitems(userId: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/item`, {
+  const response = await fetch(`${process.env.SERVER_API}/item`, {
     method: "GET",
   });
 
@@ -30,7 +29,7 @@ export async function getAllitems(userId: string) {
 
 export async function deleteItem(id: string) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/item/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/item/${id}`, {
       method: "DELETE",
     });
     if (!response.ok) {
@@ -55,7 +54,7 @@ export async function deleteItem(id: string) {
 }
 
 export async function getItem(id: string) {
-  const response = await useFetch(`${process.env.SERVER_API}/item/${id}`, {
+  const response = await fetch(`${process.env.SERVER_API}/item/${id}`, {
     method: "GET",
   });
 
@@ -75,7 +74,7 @@ export async function getItem(id: string) {
 
 export async function editItem(id: string, values: any) {
   try {
-    const response = await useFetch(`${process.env.SERVER_API}/item/${id}`, {
+    const response = await fetch(`${process.env.SERVER_API}/item/${id}`, {
       method: "PATCH",
       body: JSON.stringify(values),
     });
