@@ -1,7 +1,5 @@
 import Layout from "@/components/Navbar";
-import { Invoices, invoicesColumns } from "@/components/cfo/invoices/columns";
 import { InvoiceTable } from "@/components/cfo/invoices/table";
-import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CirclePlus } from "lucide-react";
