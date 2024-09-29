@@ -22,6 +22,48 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
+const ActionCell = ({ project, onDelete }: { project: Project; onDelete: (id: string) => Promise<void>; }) => {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const handleDelete = async () => {
+    await onDelete(project.id);
+    setIsAlertOpen(false);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {/* <DropdownMenuItem asChild>
+            <Link href={`/projects/edit-project/${project.id}`}>Edit</Link>
+          </DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => setIsAlertOpen(true)}>Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the item.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
 export const ProjectsColumns: ColumnDef<Project>[] = [
   {
     accessorKey: "createdAt",
@@ -87,50 +129,8 @@ export const ProjectsColumns: ColumnDef<Project>[] = [
       const { onDelete } = table.options.meta as {
         onDelete: (id: string) => Promise<void>;
       };
-      const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-      const handleDelete = async () => {
-        await onDelete(project.id);
-        setIsAlertOpen(false);
-      };
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {/* <DropdownMenuItem asChild>
-                <Link href={`/projects/edit-project/${project.id}`}>Edit</Link>
-              </DropdownMenuItem> */}
-              <DropdownMenuItem onClick={() => setIsAlertOpen(true)}>
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  item.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </>
-      );
+      return <ActionCell project={project} onDelete={onDelete} />;
     },
   },
 ];

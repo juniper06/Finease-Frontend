@@ -124,4 +124,5 @@ export type Invoice = {
   invoiceNumber: string;
   total: number;
   balanceDue: number;
+  status: string;
 }
