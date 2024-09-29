@@ -17,10 +17,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { BudgetProposal } from "@/actions/cfo/budget-proposal.action";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { BudgetProposal } from "@/actions/ceo/budget-proposal.action";
 
 export const BudgetProposalColumns: ColumnDef<BudgetProposal>[] = [
   {

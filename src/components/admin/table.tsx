@@ -1,6 +1,4 @@
-// table.tsx
-
-"use client"; // Ensure this is the first line in your component file
+"use client"; 
 
 import { User, deleteUser, getAllUser, getUserData } from "@/actions/auth/user.action";
 import { DataTable } from "@/components/data-table";
@@ -63,5 +61,9 @@ export const UsersTable = () => {
     return <div>No users found.</div>;
   }
 
-  return <DataTable columns={usersColumn} data={data} onDelete={handleDelete}/>;
+  return <DataTable columns={usersColumn} data={data} onDelete={handleDelete} onApprove={function (id: number): Promise<void> {
+    throw new Error("Function not implemented.");
+  } } onReject={function (id: number): Promise<void> {
+    throw new Error("Function not implemented.");
+  } }/>;
 };

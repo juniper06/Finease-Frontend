@@ -13,15 +13,25 @@ export async function getAllBudgetProposals(ceoId: number) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const payments = await response.json();
-    return Array.isArray(payments) ? payments : [];
+    const proposals = await response.json();
+
+    if (Array.isArray(proposals)) {
+      return proposals; // Return the array of proposals
+    } else {
+      return { error: "Unexpected response format" }; // Handle unexpected format
+    }
   } catch (error) {
-    console.error("Error fetching payment records:", error);
-    return [];
+    console.error("Error fetching budget proposals:", error);
+    // Assert the error as an Error type to access message
+    return { error: (error as Error).message }; // Return an object with the error message
   }
 }
 
-export async function editBudgetProposalStatus(id: string, status: string, ceoComment: string) {
+export async function editBudgetProposalStatus(
+  id: string,
+  status: string,
+  ceoComment: string
+) {
   try {
     const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/${id}/status`,
@@ -57,3 +67,24 @@ export async function editBudgetProposalStatus(id: string, status: string, ceoCo
     };
   }
 }
+
+export type BudgetProposal = {
+  id: string;
+  proposalTitle: string;
+  proposalNumber: string;
+  totalBudget: number;
+  budgetPeriod: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  budgetBreakdown: {
+    proposalCategory: string;
+    allocatedAmount: number;
+    description: string;
+  }[];
+  justification: string;
+  strategy: string;
+  potentialRisk: string;
+  alternative: string;
+  ceoComment: string;
+};

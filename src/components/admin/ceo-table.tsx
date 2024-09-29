@@ -31,7 +31,7 @@ export const CEOTable = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleApprove = async (id: string) => {
+  const handleApprove = async (id: number) => {
     const result = await approveUser(id);
     if (result.success) {
       toast({
@@ -48,7 +48,7 @@ export const CEOTable = () => {
     }
   };
 
-  const handleReject = async (id: string) => {
+  const handleReject = async (id: number) => {
     const result = await rejectUser(id);
     if (result.success) {
       toast({
@@ -65,6 +65,7 @@ export const CEOTable = () => {
     }
   };
 
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -73,12 +74,17 @@ export const CEOTable = () => {
     return <div>No pending CEO requests found.</div>;
   }
 
+  function handleDelete(id: string): Promise<void> {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <DataTable<CEORequest, unknown>
       columns={CEOColumns}
       data={data}
       onApprove={handleApprove}
       onReject={handleReject}
+      onDelete={handleDelete}
     />
   );
 };

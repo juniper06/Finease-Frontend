@@ -1,13 +1,17 @@
 "use client";
+
 import React, { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/components/data-table";
-import { BudgetProposalColumns } from "./columns";
 import { useToast } from "@/components/ui/use-toast";
 import { getUserData } from "@/actions/auth/user.action";
-import { getAllBudgetProposals } from "@/actions/ceo/budget-proposal.action";
+import {
+  BudgetProposal,
+  getAllBudgetProposals,
+} from "@/actions/ceo/budget-proposal.action";
+import { BudgetProposalColumns } from "./columns";
 
 export const BudgetProposalTable = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<BudgetProposal[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [tableKey, setTableKey] = useState(0);
@@ -18,11 +22,11 @@ export const BudgetProposalTable = () => {
       const user = await getUserData();
       const budgetProposals = await getAllBudgetProposals(user.id);
 
-      if (budgetProposals.error) {
-        throw new Error(budgetProposals.error);
+      if (Array.isArray(budgetProposals)) {
+        setData(budgetProposals);
+      } else {
+        throw new Error("Failed to fetch budget proposals");
       }
-
-      setData(budgetProposals);
     } catch (error) {
       console.error("Failed to fetch budget proposals", error);
       toast({
@@ -39,16 +43,20 @@ export const BudgetProposalTable = () => {
     fetchData();
   }, [fetchData]);
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <DataTable
+    <DataTable<BudgetProposal, BudgetProposal>
       key={tableKey}
       columns={BudgetProposalColumns}
-      data={data}
-    />
+      data={data} onApprove={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      } } onReject={function (id: number): Promise<void> {
+        throw new Error("Function not implemented.");
+      } } onDelete={function (id: string): Promise<void> {
+        throw new Error("Function not implemented.");
+      } }    />
   );
 };

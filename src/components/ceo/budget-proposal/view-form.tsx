@@ -36,7 +36,9 @@ export const ViewBudgetProposal = ({ id }: Props) => {
       try {
         setLoading(true);
         const data = await getBudgetProposal(id);
-        if (data.error) {
+        
+        // Type narrowing: Check if `data` contains an `error` property
+        if ('error' in data) {
           toast({
             title: "Error",
             description: data.error,
@@ -60,6 +62,7 @@ export const ViewBudgetProposal = ({ id }: Props) => {
     };
     fetchBudgetProposal();
   }, [id, toast]);
+  
 
   const handleStatusUpdate = async (status: string) => {
     if (!budgetProposal) return;
