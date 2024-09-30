@@ -29,6 +29,15 @@ export default auth((req) => {
   const user = req.auth as CustomSession | null;
   const userRole = user?.user?.role;
 
+  // Handle root path
+  if (nextUrl.pathname === "/") {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL("/login", nextUrl));
+    }
+    // If logged in, allow access or redirect based on role
+    return;
+  }
+
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isPublicRoute = publicRoute.includes(nextUrl.pathname);

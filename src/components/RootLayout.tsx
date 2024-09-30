@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { authRoutes } from "@/lib/routes";
 
 export default function RootLayout({
   children,
@@ -17,7 +16,7 @@ export default function RootLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (session && !authRoutes.includes(pathname)) {
+    if (session) {
       const userRole = session.user.role;
       if (userRole === "CEO" && !pathname.startsWith("/ceo")) {
         router.push("/ceo");
@@ -30,7 +29,6 @@ export default function RootLayout({
       }
     }
   }, [session, pathname, router]);
-  
 
   return (
     <ThemeProvider
