@@ -29,15 +29,6 @@ export default auth((req) => {
   const user = req.auth as CustomSession | null;
   const userRole = user?.user?.role;
 
-  // Handle root path
-  if (nextUrl.pathname === "/") {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
-    }
-    // If logged in, allow access or redirect based on role
-    return;
-  }
-
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isPublicRoute = publicRoute.includes(nextUrl.pathname);
@@ -53,7 +44,8 @@ export default auth((req) => {
     return;
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
+  // Redirect to login page if not logged in, including the root URL
+  if (!isLoggedIn && (!isPublicRoute || nextUrl.pathname === '/')) {
     const redirectUrl = new URL("/login", nextUrl);
     const callbackUrl = nextUrl.pathname;
     if (callbackUrl !== DEFAULT_LOGIN_REDIRECT) {
@@ -68,7 +60,7 @@ export default auth((req) => {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
   }
-}) as any;
+})
 
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
