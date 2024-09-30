@@ -5,7 +5,7 @@ import { Session } from "next-auth/session";
 declare module "next-auth" {
   interface User {
     token: string;
-    role: string
+    role: string;
   }
   interface Session {
     user: User;

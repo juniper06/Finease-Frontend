@@ -7,10 +7,12 @@ declare module "next-auth" {
       id: string;
       email: string;
       role: string;
+      token: string;
     };
   }
   interface User {
     role: string;
+    token: string;
   }
 }
 
@@ -40,6 +42,7 @@ export const {
           return {
             ...result.data,
             role: result.data.role,
+            token: result.data.token,
           };
         }
         return null;
