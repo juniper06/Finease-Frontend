@@ -1,60 +1,71 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 // Fetch pending CEO requests
 export async function getPendingCEOs() {
+  const session = await auth(); // Add session retrieval for authorization
   const response = await fetch(`${process.env.SERVER_API}/admin/requests`, {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${session?.user.token}`,
+      "Content-Type": "application/json",
+    },
   });
+
   if (!response.ok) {
     return {
       error: "Failed to fetch pending CEO requests",
     };
   }
+
   return response.json();
 }
 
 // Approve a CEO request
 export async function approveUser(id: number) {
-  try {
-    const response = await fetch(`${process.env.SERVER_API}/admin/approve/${id}`, {
+  const session = await auth(); // Add session retrieval for authorization
+
+  const response = await fetch(
+    `${process.env.SERVER_API}/admin/approve/${id}`,
+    {
       method: "PATCH",
-    });
-
-    if (!response.ok) {
-      let errorMessage = "Failed to approve user.";
-      if (response.status === 404) {
-        errorMessage = "User not found.";
-      }
-      return { error: errorMessage };
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
     }
+  );
 
-    return { success: true };
-  } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+  if (!response.ok) {
+    let errorMessage = "Failed to approve user.";
+    if (response.status === 404) {
+      errorMessage = "User not found.";
+    }
+    return { error: errorMessage };
   }
+
+  return { success: true };
 }
 
 // Reject a CEO request
 export async function rejectUser(id: number) {
-  try {
-    const response = await fetch(`${process.env.SERVER_API}/admin/reject/${id}`, {
-      method: "PATCH",
-    });
+  const session = await auth(); // Add session retrieval for authorization
 
-    if (!response.ok) {
-      let errorMessage = "Failed to reject user.";
-      if (response.status === 404) {
-        errorMessage = "User not found.";
-      }
-      return { error: errorMessage };
+  const response = await fetch(`${process.env.SERVER_API}/admin/reject/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${session?.user.token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    let errorMessage = "Failed to reject user.";
+    if (response.status === 404) {
+      errorMessage = "User not found.";
     }
-
-    return { success: true };
-  } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    return { error: errorMessage };
   }
+
+  return { success: true };
 }
