@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 
 // Fetch pending CEO requests
 export async function getPendingCEOs() {
-  const session = await auth(); // Add session retrieval for authorization
+  const session = await auth(); 
   const response = await fetch(`${process.env.SERVER_API}/admin/requests`, {
     method: "GET",
     headers: {
@@ -23,7 +23,7 @@ export async function getPendingCEOs() {
 
 // Approve a CEO request
 export async function approveUser(id: number) {
-  const session = await auth(); // Add session retrieval for authorization
+  const session = await auth(); 
 
   const response = await fetch(
     `${process.env.SERVER_API}/admin/approve/${id}`,
@@ -49,7 +49,7 @@ export async function approveUser(id: number) {
 
 // Reject a CEO request
 export async function rejectUser(id: number) {
-  const session = await auth(); // Add session retrieval for authorization
+  const session = await auth(); 
 
   const response = await fetch(`${process.env.SERVER_API}/admin/reject/${id}`, {
     method: "PATCH",

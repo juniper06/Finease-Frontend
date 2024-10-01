@@ -109,7 +109,7 @@ export default function TotalSales({ startupId }: TotalPaymentsProps) {
       <CardContent>
         <div className="text-2xl font-bold">
           {totalSales !== null
-            ? `+ ₱${formatNumber(totalSales)}`
+            ? `+ ${formatNumber(totalSales)}`
             : "Loading..."}
         </div>
       </CardContent>

@@ -126,7 +126,7 @@ export function TotalGraph({ startupId }: TotalDifferenceProps) {
         <span>Total Expenses</span>
       </div>
       <div style={{ marginBottom: "10px" }}>
-      ₱{formatNumber(totalExpenses)}
+      {formatNumber(totalExpenses)}
       </div>
       <div
         style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
@@ -141,7 +141,7 @@ export function TotalGraph({ startupId }: TotalDifferenceProps) {
         ></div>
         <span>Total Sales</span>
       </div>
-      <div>₱{formatNumber(totalSales)}</div>
+      <div>{formatNumber(totalSales)}</div>
     </div>
   );
 
@@ -164,9 +164,9 @@ export function TotalGraph({ startupId }: TotalDifferenceProps) {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `₱${formatNumber(value)}`}
+            tickFormatter={(value) => `${formatNumber(value)}`}
           />
-          <Tooltip formatter={(value) => `₱${formatNumber(Number(value))}`} />
+          <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
           <Legend
             verticalAlign="top"
             align="right"

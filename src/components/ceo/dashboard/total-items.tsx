@@ -18,7 +18,7 @@ import {
 } from "recharts";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllitems } from "@/actions/ceo/dashboard.action";
+import { getAllItems } from "@/actions/ceo/dashboard.action";
 import { formatNumber } from "@/lib/utils";
 
 const initialChartData = [
@@ -63,7 +63,7 @@ export default function TotalItems() {
       if (!user) return;
       setIsLoading(true);
       try {
-        const items = await getAllitems(user.id);
+        const items = await getAllItems(user.id);
 
         if (Array.isArray(items)) {
           const monthlyData = initialChartData.map((monthData, index) => {
@@ -105,7 +105,7 @@ export default function TotalItems() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {isLoading ? "Loading..." : `+ ${formatNumber(totalItems)}`}
+          {isLoading ? "Loading..." : `+ ${(totalItems)}`}
         </div>
       </CardContent>
       <CardContent>
@@ -116,7 +116,7 @@ export default function TotalItems() {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `${formatNumber(value as number)}`} />
+            <Tooltip formatter={(value) => `${(value)}`} />
             <Line
               type="monotone"
               dataKey="items"

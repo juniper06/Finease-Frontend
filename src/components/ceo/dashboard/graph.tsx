@@ -90,12 +90,12 @@ export function TotalGraph() {
         <div style={{ backgroundColor: '#ff4d4f', width: '10px', height: '10px', marginRight: '10px' }}></div>
         <span>Total Expenses</span>
       </div>
-      <div style={{ marginBottom: '10px' }}>₱{formatNumber(parseFloat(totalExpenses.toFixed(2)))}</div>
+      <div style={{ marginBottom: '10px' }}>{formatNumber(parseFloat(totalExpenses.toFixed(2)))}</div>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <div style={{ backgroundColor: '#4caf50', width: '10px', height: '10px', marginRight: '10px' }}></div>
         <span>Total Sales</span>
       </div>
-      <div>₱{formatNumber(parseFloat(totalSales.toFixed(2)))}</div>
+      <div>{formatNumber(parseFloat(totalSales.toFixed(2)))}</div>
     </div>
   );
 
@@ -107,8 +107,8 @@ export function TotalGraph() {
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={data}>
           <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₱${formatNumber(value)}`} />
-          <Tooltip formatter={(value) => `₱${formatNumber(Number(value))}`} />
+          <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${formatNumber(value)}`} />
+          <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
           <Legend verticalAlign="top" align="right" layout="vertical" content={renderCustomLegend} />
           <Bar dataKey="expenses" fill="#ff4d4f" radius={[4, 4, 0, 0]} name="Total Expenses" />
           <Bar dataKey="sales" fill="#4caf50" radius={[4, 4, 0, 0]} name="Total Sales" />

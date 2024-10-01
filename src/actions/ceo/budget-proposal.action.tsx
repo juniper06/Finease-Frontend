@@ -1,29 +1,31 @@
 "use server";
 
+import { auth } from "@/lib/auth";
+
 export async function getAllBudgetProposals(ceoId: number) {
   try {
+    const session = await auth(); 
     const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/ceo/${ceoId}`,
       {
         method: "GET",
+        headers: {
+          "Authorization": `Bearer ${session?.user.token}`,
+          "Content-Type": "application/json",
+        },
       }
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      return { error: `Failed to fetch budget proposals. Status: ${response.status}` };
     }
 
     const proposals = await response.json();
 
-    if (Array.isArray(proposals)) {
-      return proposals; // Return the array of proposals
-    } else {
-      return { error: "Unexpected response format" }; // Handle unexpected format
-    }
+    return Array.isArray(proposals) ? proposals : { error: "Unexpected response format" };
   } catch (error) {
     console.error("Error fetching budget proposals:", error);
-    // Assert the error as an Error type to access message
-    return { error: (error as Error).message }; // Return an object with the error message
+    return { error: "Network error. Please try again." };
   }
 }
 
@@ -33,10 +35,15 @@ export async function editBudgetProposalStatus(
   ceoComment: string
 ) {
   try {
+    const session = await auth(); 
     const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/${id}/status`,
       {
         method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${session?.user.token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ status, ceoComment }),
       }
     );
@@ -50,21 +57,14 @@ export async function editBudgetProposalStatus(
       } else {
         errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
 
     const updatedProposal = await response.json();
-    return {
-      success: true,
-      data: updatedProposal,
-    };
+    return { success: true, data: updatedProposal };
   } catch (error) {
     console.error("Network error:", error);
-    return {
-      error: "Network error. Please try again.",
-    };
+    return { error: "Network error. Please try again." };
   }
 }
 

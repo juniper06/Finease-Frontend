@@ -77,7 +77,7 @@ export default function TotalExpenses({ startupId }: TotalExpensesProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {totalExpenses !== null ? `- ₱${formatNumber(totalExpenses)}` : "Loading..."}
+          {totalExpenses !== null ? `- ${formatNumber(totalExpenses)}` : "Loading..."}
         </div>
       </CardContent>
       <CardContent>

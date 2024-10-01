@@ -106,7 +106,7 @@ export default function TotalExpenses() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {isLoading ? "Loading..." : `- ₱${formatNumber(totalExpenses)}`}
+          {isLoading ? "Loading..." : `- ${formatNumber(totalExpenses)}`}
         </div>
       </CardContent>
       <CardContent>
