@@ -44,13 +44,16 @@ export default auth((req) => {
     return;
   }
 
-  // Redirect to login page if not logged in, including the root URL
-  if (!isLoggedIn && (!isPublicRoute || nextUrl.pathname === '/')) {
+  // Allow access to the login page without redirection
+  if (nextUrl.pathname === '/login') {
+    return;
+  }
+
+  // Redirect to login page if not logged in, excluding public routes
+  if (!isLoggedIn && !isPublicRoute) {
     const redirectUrl = new URL("/login", nextUrl);
     const callbackUrl = nextUrl.pathname;
-    if (callbackUrl !== DEFAULT_LOGIN_REDIRECT) {
-      redirectUrl.searchParams.append("callbackUrl", callbackUrl);
-    }
+    redirectUrl.searchParams.append("callbackUrl", callbackUrl);
     return NextResponse.redirect(redirectUrl);
   }
 
