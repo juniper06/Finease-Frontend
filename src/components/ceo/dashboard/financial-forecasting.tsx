@@ -49,18 +49,22 @@ export function FinancialForecasting() {
         getAllPaymentRecords(user.id),
       ]);
   
-      // Continue processing the expenses and payments as arrays
-      const expenseData = expenses.reduce((acc, expense) => {
-        const month = new Date(expense.createdAt).getMonth();
-        acc[month] = (acc[month] || 0) + parseFloat(expense.amount);
-        return acc;
-      }, Array(12).fill(0));
+      // Ensure expenses and payments are arrays before reducing
+      const expenseData = Array.isArray(expenses)
+        ? expenses.reduce((acc, expense) => {
+            const month = new Date(expense.createdAt).getMonth();
+            acc[month] = (acc[month] || 0) + parseFloat(expense.amount);
+            return acc;
+          }, Array(12).fill(0))
+        : Array(12).fill(0); // Default to an empty array if it's not an array
   
-      const paymentData = payments.reduce((acc, payment) => {
-        const month = new Date(payment.createdAt).getMonth();
-        acc[month] = (acc[month] || 0) + parseFloat(payment.totalAmount);
-        return acc;
-      }, Array(12).fill(0));
+      const paymentData = Array.isArray(payments)
+        ? payments.reduce((acc, payment) => {
+            const month = new Date(payment.createdAt).getMonth();
+            acc[month] = (acc[month] || 0) + parseFloat(payment.totalAmount);
+            return acc;
+          }, Array(12).fill(0))
+        : Array(12).fill(0); // Default to an empty array if it's not an array
   
       const monthlyNet = paymentData.map((revenue: number, index: string | number) => revenue - expenseData[index]);
       const totalFunds = monthlyNet.reduce((acc: any, net: any) => acc + net, 0);
@@ -90,7 +94,7 @@ export function FinancialForecasting() {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Financial Forecasting</CardTitle>
-        <CardDescription>Runway Projection </CardDescription>
+        <CardDescription>Runway Projection</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {loading ? (

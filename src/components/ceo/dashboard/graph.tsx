@@ -36,25 +36,33 @@ export function TotalGraph() {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
       ];
 
-      const expenseData = expenses.reduce((acc, expense) => {
-        const month = new Date(expense.createdAt).getMonth();
-        if (!acc[month]) acc[month] = 0;
-        acc[month] += parseFloat(expense.amount);
-        return acc;
-      }, new Array(12).fill(0));
+      // Check if expenses is an array before reducing
+      const expenseData = Array.isArray(expenses) ? 
+        expenses.reduce((acc, expense) => {
+          const month = new Date(expense.createdAt).getMonth();
+          if (!acc[month]) acc[month] = 0;
+          acc[month] += parseFloat(expense.amount);
+          return acc;
+        }, new Array(12).fill(0)) : new Array(12).fill(0); // Default if not an array
 
-      projects.forEach(project => {
-        const month = new Date(project.createdAt).getMonth();
-        expenseData[month] += parseFloat(project.totalExpenses || 0);
-      });
+      // Handle projects the same way
+      if (Array.isArray(projects)) {
+        projects.forEach(project => {
+          const month = new Date(project.createdAt).getMonth();
+          expenseData[month] += parseFloat(project.totalExpenses || 0);
+        });
+      }
 
-      const paymentData = payments.reduce((acc, payment) => {
-        const month = new Date(payment.createdAt).getMonth();
-        if (!acc[month]) acc[month] = 0;
-        acc[month] += parseFloat(payment.totalAmount);
-        return acc;
-      }, new Array(12).fill(0));
+      // Check if payments is an array before reducing
+      const paymentData = Array.isArray(payments) ? 
+        payments.reduce((acc, payment) => {
+          const month = new Date(payment.createdAt).getMonth();
+          if (!acc[month]) acc[month] = 0;
+          acc[month] += parseFloat(payment.totalAmount);
+          return acc;
+        }, new Array(12).fill(0)) : new Array(12).fill(0); // Default if not an array
 
+      // Prepare graph data
       const graphData: GraphData[] = monthNames.map((month, index) => ({
         name: month,
         expenses: expenseData[index] || 0,
@@ -62,12 +70,12 @@ export function TotalGraph() {
       }));
 
       const currentMonth = new Date().getMonth();
-      const totalExpenses = expenseData[currentMonth] || 0;
-      const totalSales = paymentData[currentMonth] || 0;
+      const currentTotalExpenses = expenseData[currentMonth] || 0;
+      const currentTotalSales = paymentData[currentMonth] || 0;
 
       setData(graphData);
-      setTotalExpenses(totalExpenses);
-      setTotalSales(totalSales);
+      setTotalExpenses(currentTotalExpenses);
+      setTotalSales(currentTotalSales);
     } catch (error) {
       console.error("Failed to fetch data", error);
       toast({

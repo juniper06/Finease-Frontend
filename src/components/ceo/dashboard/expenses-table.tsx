@@ -53,29 +53,49 @@ export default function ExpensesAndProjectsTable() {
       ]);
 
       // Initialize userMap with the correct type
-      const userMap: UserMap = users.reduce((acc, user) => {
-        acc[user.id] = {
-          name: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          expenses: [],
-          projectExpenses: 0,
-        };
-        return acc;
-      }, {} as UserMap);
+      const userMap: UserMap = Array.isArray(users)
+        ? users.reduce((acc, user) => {
+            acc[user.id] = {
+              name: `${user.firstName} ${user.lastName}`,
+              email: user.email,
+              expenses: [],
+              projectExpenses: 0,
+            };
+            return acc;
+          }, {} as UserMap)
+        : {};
 
       // Aggregate regular expenses
-      expenses.forEach((expense) => {
-        if (userMap[expense.userId]) {
-          userMap[expense.userId].expenses.push(expense);
-        }
-      });
+      if (Array.isArray(expenses)) {
+        expenses.forEach((expense) => {
+          if (userMap[expense.userId]) {
+            userMap[expense.userId].expenses.push(expense);
+          }
+        });
+      } else {
+        console.error("Error fetching expenses:", expenses.error);
+        toast({
+          title: "Error",
+          description: expenses.error || "Failed to fetch expenses.",
+          variant: "destructive",
+        });
+      }
 
       // Aggregate project expenses
-      projects.forEach((project) => {
-        if (userMap[project.userId]) {
-          userMap[project.userId].projectExpenses += parseFloat(project.totalExpenses || 0);
-        }
-      });
+      if (Array.isArray(projects)) {
+        projects.forEach((project) => {
+          if (userMap[project.userId]) {
+            userMap[project.userId].projectExpenses += parseFloat(project.totalExpenses || "0");
+          }
+        });
+      } else {
+        console.error("Error fetching projects:", projects.error);
+        toast({
+          title: "Error",
+          description: projects.error || "Failed to fetch projects.",
+          variant: "destructive",
+        });
+      }
 
       const combinedData = Object.entries(userMap)
         .filter(([_, userData]) => userData.expenses.length > 0 || userData.projectExpenses > 0)

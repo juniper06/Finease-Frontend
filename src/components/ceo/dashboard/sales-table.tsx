@@ -36,11 +36,14 @@ export default function RecentSalesTable() {
           return acc;
         }, {});
 
-        const updatedPayments = payments.map((payment) => ({
-          ...payment,
-          userName: userMap[payment.userId]?.name || "Unknown User",
-          userEmail: userMap[payment.userId]?.email || "N/A",
-        }));
+        // Check if payments is an array before mapping
+        const updatedPayments = Array.isArray(payments) 
+          ? payments.map((payment) => ({
+              ...payment,
+              userName: userMap[payment.userId]?.name || "Unknown User",
+              userEmail: userMap[payment.userId]?.email || "N/A",
+            }))
+          : []; // Default to empty array if not an array
 
         setData(updatedPayments);
       } catch (error) {

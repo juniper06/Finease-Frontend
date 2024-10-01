@@ -61,16 +61,14 @@ export default function TotalSales() {
       try {
         const payments = await getAllPaymentRecords(user.id);
 
+        // Check if payments is an array before processing
         const monthlyData = initialChartData.map((monthData, index) => {
-          const monthSales = payments
-            .filter(
-              (payment: any) => new Date(payment.createdAt).getMonth() === index
-            )
-            .reduce(
-              (acc: number, payment: any) =>
-                acc + parseFloat(payment.totalAmount),
-              0
-            );
+          const monthSales = Array.isArray(payments)
+            ? payments
+                .filter((payment: any) => new Date(payment.createdAt).getMonth() === index)
+                .reduce((acc: number, payment: any) => acc + parseFloat(payment.totalAmount), 0)
+            : 0; // Default to 0 if payments is not an array
+
           return { ...monthData, sales: monthSales };
         });
 
@@ -106,24 +104,14 @@ export default function TotalSales() {
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={monthlySales}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="month"
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
+            <XAxis dataKey="month" tickFormatter={(value) => value.slice(0, 3)} />
             <Tooltip formatter={(value) => `${formatNumber(Number(value))}`} />
-            <Line
-              type="monotone"
-              dataKey="sales"
-              stroke="#8884d8"
-              strokeWidth={2}
-            />
+            <Line type="monotone" dataKey="sales" stroke="#8884d8" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
       <CardFooter>
-        <div className="leading-none text-muted-foreground">
-          Monthly Sales Data
-        </div>
+        <div className="leading-none text-muted-foreground">Monthly Sales Data</div>
       </CardFooter>
     </Card>
   );
