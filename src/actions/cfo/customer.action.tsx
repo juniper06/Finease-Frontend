@@ -1,120 +1,130 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 export async function addCustomer(values: any) {
   try {
+    const session = await auth(); 
     const response = await fetch(`${process.env.SERVER_API}/customer`, {
       method: "POST",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`, 
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
+
     if (!response.ok) {
       let errorMessage = "Failed to add customer.";
       if (response.status === 404) {
-        errorMessage = "customer not found.";
-      } else {
-        errorMessage = "Something went wrong.";
+        errorMessage = "Customer not found.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error in addCustomer:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export async function getAllCustomers(userId: string) {
-  const response = await fetch(`${process.env.SERVER_API}/customer`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/customer`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`, 
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+    if (!response.ok) {
+      return { error: `Failed to fetch customers. Status: ${response.status}` };
+    }
+
+    const customers = await response.json();
+    return customers.filter(
+      (customer: { userId: string }) => customer.userId === userId
+    );
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    return { error: "An unexpected error occurred." };
   }
-  const customers = await response.json();
-  return customers.filter(
-    (customer: { userId: string }) => customer.userId === userId
-  );
 }
 
 export async function getCustomer(id: string) {
-  const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`, 
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
-  }
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: "Customer not found." };
+      }
+      return { error: "Failed to fetch customer." };
+    }
 
-  if (response.status === 404) {
-    return {
-      error: "Item not found",
-    };
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching customer:", error);
+    return { error: "Network error. Please try again." };
   }
-  return response.json();
 }
 
 export async function deleteCustomer(id: string) {
   try {
-    const response = await fetch(
-      `${process.env.SERVER_API}/customer/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`, 
+      },
+    });
+
     if (!response.ok) {
       let errorMessage = "Failed to delete customer.";
       if (response.status === 404) {
-        errorMessage = "Item not found.";
-      } else {
-        errorMessage = "Something went wrong.";
+        errorMessage = "Customer not found.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error deleting customer:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export async function editCustomer(id: string, values: any) {
   try {
+    const session = await auth(); 
     const response = await fetch(`${process.env.SERVER_API}/customer/${id}`, {
       method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`, 
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
+
     if (!response.ok) {
       let errorMessage = "Failed to update customer.";
       if (response.status === 404) {
         errorMessage = "Customer not found.";
-      } else {
-        errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error in editCustomer:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
@@ -130,4 +140,4 @@ export type Customer = {
   state: string;
   zipCode: number;
   city: string;
-}
+};

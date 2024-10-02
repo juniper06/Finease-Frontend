@@ -98,7 +98,7 @@ export default function TotalCustomer() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {totalCustomers !== null ? `+ ${formatNumber(totalCustomers)}` : "Loading..."}
+          {totalCustomers !== null ? `+ ${(totalCustomers)}` : "Loading..."}
         </div>
       </CardContent>
       <CardContent>
@@ -109,7 +109,7 @@ export default function TotalCustomer() {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `${formatNumber(Number(value))}`}/>
+            <Tooltip formatter={(value) => `${(value)}`}/>
             <Line
               type="monotone"
               dataKey="customers"

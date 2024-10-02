@@ -1,107 +1,131 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 export async function addExpenses(values: any) {
-  const response = await fetch(`${process.env.SERVER_API}/expenses`, {
-    method: "POST",
-    body: JSON.stringify(values),
-  });
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/expenses`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { error: errorData.message || "Failed to add expenses." };
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Network error in addExpenses:", error);
+    return { error: "Network error. Please try again." };
   }
-  return response.json();
 }
 
 export async function getAllExpenses(userId: string) {
-  const response = await fetch(`${process.env.SERVER_API}/expenses`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/expenses`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+    if (!response.ok) {
+      return { error: `Failed to fetch expenses. Status: ${response.status}` };
+    }
+
+    const expenses = await response.json();
+    return expenses.filter(
+      (expense: { userId: string }) => expense.userId === userId
+    );
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    return { error: "An unexpected error occurred." };
   }
-  const expenses = await response.json();
-  return expenses.filter(
-    (expense: { userId: string }) => expense.userId === userId
-  );
 }
 
 export async function getExpenses(id: string) {
-  const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
-  }
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: "Expense not found." };
+      }
+      return { error: "Failed to fetch expense." };
+    }
 
-  if (response.status === 404) {
-    return {
-      error: "Item not found",
-    };
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching expense:", error);
+    return { error: "Network error. Please try again." };
   }
-  return response.json();
 }
 
 export async function deleteExpenses(id: string) {
   try {
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
     });
+
     if (!response.ok) {
-      let errorMessage = "Failed to delete expenses.";
+      let errorMessage = "Failed to delete expense.";
       if (response.status === 404) {
-        errorMessage = "Expenses not found.";
-      } else {
-        errorMessage = "Something went wrong.";
+        errorMessage = "Expense not found.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error deleting expense:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export async function editExpenses(id: string, values: any) {
   try {
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/expenses/${id}`, {
       method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
+
     if (!response.ok) {
-      let errorMessage = "Failed to update expenses.";
+      let errorMessage = "Failed to update expense.";
       if (response.status === 404) {
-        errorMessage = "expenses not found.";
-      } else {
-        errorMessage = "Something went wrong.";
+        errorMessage = "Expense not found.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error in editExpenses:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export type Expenses = {
   id: string;
   amount: number;
-}
+};

@@ -1,112 +1,134 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 export async function addProject(values: any) {
-  const response = await fetch(`${process.env.SERVER_API}/project`, {
-    method: "POST",
-    body: JSON.stringify(values),
-  });
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+  try {
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/project`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { error: errorData.message || "Failed to add project." };
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Network error in addProject:", error);
+    return { error: "Network error. Please try again." };
   }
-  return response.json();
 }
 
 export async function getAllProjects(userId: string) {
-  const response = await fetch(`${process.env.SERVER_API}/project`, {
-    method: "GET",
-  });
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+  try {
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/project`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      return { error: `Failed to fetch projects. Status: ${response.status}` };
+    }
+
+    const projects = await response.json();
+    return projects.filter(
+      (project: { userId: string }) => project.userId === userId
+    );
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    return { error: "An unexpected error occurred." };
   }
-  const projects = await response.json();
-  return projects.filter(
-    (project: { userId: string }) => project.userId === userId
-  );
 }
 
 export async function getProject(id: string): Promise<Project | { error: string }> {
-  const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth(); 
+    const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: "Project not found." };
+      }
+      return { error: "Failed to fetch project." };
+    }
+
+    const project = await response.json();
+    return project;
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    return { error: "Network error. Please try again." };
   }
-
-  if (response.status === 404) {
-    return {
-      error: "Project not found",
-    };
-  }
-
-  const project = await response.json();
-  return project;
 }
 
 export async function deleteProject(id: string) {
   try {
+    const session = await auth(); 
     const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`,
+      },
     });
+
     if (!response.ok) {
-      let errorMessage = "Failed to delete Project.";
+      let errorMessage = "Failed to delete project.";
       if (response.status === 404) {
         errorMessage = "Project not found.";
-      } else {
-        errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error deleting project:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export async function editProject(id: string, values: any) {
   try {
+    const session = await auth(); 
     const response = await fetch(`${process.env.SERVER_API}/project/${id}`, {
       method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
+
     if (!response.ok) {
-      let errorMessage = "Failed to update Project.";
+      let errorMessage = "Failed to update project.";
       if (response.status === 404) {
         errorMessage = "Project not found.";
-      } else {
-        errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error in editProject:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export type Project = {
-  userId: any;
-  customerId(customerId: any): string | undefined;
-  resources: never[];
-  users: never[];
+  customerId: string;
+  userId: string;
   id: string;
   projectName: string;
   projectCode: string;

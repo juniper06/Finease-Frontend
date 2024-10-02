@@ -53,7 +53,7 @@ import { CalendarIcon, CirclePlus, Trash, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
-import { Item, getAllitems, getItem } from "@/actions/cfo/item.action";
+import { Item, getAllItems, getItem } from "@/actions/cfo/item.action";
 import { addInvoice } from "@/actions/cfo/invoice.action";
 
 const formSchema = z.object({
@@ -138,7 +138,7 @@ export const AddInvoiceForm = () => {
       } else {
         setUser(userData);
 
-        const fetchedItems = await getAllitems(userData.id);
+        const fetchedItems = await getAllItems(userData.id);
         if ("error" in fetchedItems) {
           toast({
             description: fetchedItems.error,

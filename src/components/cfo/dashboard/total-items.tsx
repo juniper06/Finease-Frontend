@@ -12,7 +12,7 @@ import { CartesianGrid, Line, LineChart, XAxis, Tooltip, ResponsiveContainer } f
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 import { formatNumber } from '@/lib/utils';
-import { getAllitems } from '@/actions/cfo/item.action';
+import { getAllItems } from '@/actions/cfo/item.action';
 
 const initialChartData = [
   { month: "January", items: 0 },
@@ -60,7 +60,7 @@ export default function TotalItems() {
     async function fetchItems() {
       if (!user) return;
       try {
-        const items = await getAllitems(user.id);
+        const items = await getAllItems(user.id);
         
         const monthlyData = initialChartData.map((monthData, index) => {
           const monthItems = items
@@ -92,7 +92,7 @@ export default function TotalItems() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {totalItems !== null ? `+ ${formatNumber(totalItems)}` : "Loading..."}
+          {totalItems !== null ? `+ ${(totalItems)}` : "Loading..."}
         </div>
       </CardContent>
       <CardContent>
@@ -100,7 +100,7 @@ export default function TotalItems() {
           <LineChart data={monthlyItems}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" tickFormatter={(value) => value.slice(0, 3)} />
-            <Tooltip formatter={(value) => `${formatNumber(Number(value))}`}/>
+            <Tooltip formatter={(value) => `${(value)}`}/>
             <Line type="monotone" dataKey="items" stroke="#8884d8" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>

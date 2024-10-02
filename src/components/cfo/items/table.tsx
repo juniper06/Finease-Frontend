@@ -2,7 +2,7 @@
 import {itemsColumns } from "@/components/cfo/items/columns";
 import { DataTable } from "@/components/data-table";
 import React, { useState, useEffect, useCallback } from "react";
-import { deleteItem, getAllitems, Item } from "@/actions/cfo/item.action";
+import { deleteItem, getAllItems, Item } from "@/actions/cfo/item.action";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -16,7 +16,7 @@ export const ItemTable = () => {
     try {
       setLoading(true);
       const user = await getUserData();
-      const items = await getAllitems(user.id);
+      const items = await getAllItems(user.id);
       setData(items);
     } catch (error) {
       console.error("Failed to fetch items", error);

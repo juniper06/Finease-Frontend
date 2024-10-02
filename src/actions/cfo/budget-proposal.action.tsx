@@ -1,14 +1,17 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 export async function addBudgetProposal(values: any) {
   try {
-    const response = await fetch(
-      `${process.env.SERVER_API}/budget-proposal`,
-      {
-        method: "POST",
-        body: JSON.stringify(values),
-      }
-    );
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/budget-proposal`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -17,7 +20,7 @@ export async function addBudgetProposal(values: any) {
       };
     }
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     console.error("Error in addBudgetProposal:", error);
     return {
@@ -27,68 +30,87 @@ export async function addBudgetProposal(values: any) {
 }
 
 export async function getAllBudgetProposals(userId: string) {
-  const response = await fetch(`${process.env.SERVER_API}/budget-proposal`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/budget-proposal`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
+    if (!response.ok) {
+      return {
+        error: `Failed to fetch budget proposals. Status: ${response.status}`,
+      };
+    }
+
+    const budgetProposals = await response.json();
+    return budgetProposals.filter(
+      (budgetProposal: { userId: string }) => budgetProposal.userId === userId
+    );
+  } catch (error) {
+    console.error("Error fetching budget proposals:", error);
     return {
-      error: "Something went wrong",
+      error: "An unexpected error occurred",
     };
   }
-  const budgetProposals = await response.json();
-  return budgetProposals.filter(
-    (budgetProposal: { userId: string }) => budgetProposal.userId === userId
-  );
 }
 
-export async function getBudgetProposal(id: string): Promise<BudgetProposal | { error: string }> {
-  const response = await fetch(`${process.env.SERVER_API}/budget-proposal/${id}`, {
-    method: "GET",
-  });
+export async function getBudgetProposal(
+  id: string
+): Promise<BudgetProposal | { error: string }> {
+  try {
+    const session = await auth();
+    const response = await fetch(
+      `${process.env.SERVER_API}/budget-proposal/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      }
+    );
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: "Budget Proposal not found" };
+      }
+      return { error: "Failed to fetch budget proposal" };
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching budget proposal:", error);
+    return { error: "An unexpected error occurred" };
   }
-
-  if (response.status === 404) {
-    return {
-      error: "Budget Proposal not found",
-    };
-  }
-
-  const budgetProposal = await response.json();
-  return budgetProposal;
 }
 
 export async function deleteBudgetProposal(id: string) {
   try {
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/budget-proposal/${id}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
       }
     );
+
     if (!response.ok) {
       let errorMessage = "Failed to delete Budget Proposal.";
       if (response.status === 404) {
         errorMessage = "Budget Proposal not found.";
-      } else {
-        errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Error deleting budget proposal:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
@@ -110,5 +132,5 @@ export type BudgetProposal = {
   strategy: string;
   potentialRisk: string;
   alternative: string;
-  ceoComment:  string;
+  ceoComment: string;
 };

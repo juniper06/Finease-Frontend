@@ -53,7 +53,7 @@ import { CalendarIcon, CirclePlus, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
-import { Item, getAllitems, getItem } from "@/actions/cfo/item.action";
+import { Item, getAllItems, getItem } from "@/actions/cfo/item.action";
 import { editInvoice, getInvoice } from "@/actions/cfo/invoice.action";
 
 const formSchema = z.object({
@@ -140,7 +140,7 @@ export const EditInvoiceForm = ({ invoiceId }: {invoiceId: string}) => {
         setUser(userData);
 
         const [fetchedItems, fetchedCustomers] = await Promise.all([
-          getAllitems(userData.id),
+          getAllItems(userData.id),
           getAllCustomers(userData.id),
         ]);
 

@@ -1,90 +1,105 @@
 "use server";
+import { auth } from "@/lib/auth";
 
 export async function addCategory(values: any) {
   try {
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/category`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(values),
     });
+
     if (!response.ok) {
       let errorMessage = "Failed to add category.";
       if (response.status === 404) {
-        errorMessage = "category not found.";
-      } else {
-        errorMessage = "Something went wrong.";
+        errorMessage = "Category not found.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error in addCategory:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
 export async function getAllCategory(userId: string) {
-  const response = await fetch(`${process.env.SERVER_API}/category`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/category`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
+    if (!response.ok) {
+      return {
+        error: `Failed to fetch categories. Status: ${response.status}`,
+      };
+    }
+
+    const categories = await response.json();
+    return categories.filter(
+      (category: { userId: string }) => category.userId === userId
+    );
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return { error: "An unexpected error occurred." };
   }
-  const categories = await response.json();
-  return categories.filter(
-    (category: { userId: string }) => category.userId === userId
-  );
 }
 
 export async function getCategory(id: string) {
-  const response = await fetch(`${process.env.SERVER_API}/category/${id}`, {
-    method: "GET",
-  });
+  try {
+    const session = await auth();
+    const response = await fetch(`${process.env.SERVER_API}/category/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
+    });
 
-  if (response.status === 500) {
-    return {
-      error: "Something went wrong",
-    };
-  }
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { error: "Category not found." };
+      }
+      return { error: "Failed to fetch category." };
+    }
 
-  if (response.status === 404) {
-    return {
-      error: "Item not found",
-    };
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return { error: "Network error. Please try again." };
   }
-  return response.json();
 }
 
 export async function deleteCategory(id: string) {
   try {
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/category/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${session?.user.token}`,
+      },
     });
+
     if (!response.ok) {
-      let errorMessage = "Failed to delete Category.";
+      let errorMessage = "Failed to delete category.";
       if (response.status === 404) {
         errorMessage = "Category not found.";
-      } else {
-        errorMessage = "Something went wrong.";
       }
-      return {
-        error: errorMessage,
-      };
+      return { error: errorMessage };
     }
-    return {
-      success: true,
-    };
+
+    return { success: true };
   } catch (error) {
-    return {
-      error: "Network error. Please try again.",
-    };
+    console.error("Network error deleting category:", error);
+    return { error: "Network error. Please try again." };
   }
 }
 
