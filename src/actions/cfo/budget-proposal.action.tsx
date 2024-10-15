@@ -32,7 +32,7 @@ export async function addBudgetProposal(values: any) {
 export async function getAllBudgetProposals(userId: string) {
   try {
     const session = await auth();
-    const response = await fetch(`${process.env.SERVER_API}/budget-proposal`, {
+    const response = await fetch(`${process.env.SERVER_API}/budget-proposal/cfo/${userId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session?.user.token}`,
@@ -46,9 +46,7 @@ export async function getAllBudgetProposals(userId: string) {
     }
 
     const budgetProposals = await response.json();
-    return budgetProposals.filter(
-      (budgetProposal: { userId: string }) => budgetProposal.userId === userId
-    );
+    return budgetProposals;
   } catch (error) {
     console.error("Error fetching budget proposals:", error);
     return {

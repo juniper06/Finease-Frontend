@@ -3,22 +3,22 @@ import { auth } from "@/lib/auth";
 
 export async function getAllPaymentRecords(ceoId: number) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/payment/ceo/${ceoId}`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`,
           "Content-Type": "application/json",
         },
       }
     );
-
     if (!response.ok) {
-      return { error: `Failed to fetch payment records. Status: ${response.status}` };
+      throw new Error(
+        `Failed to fetch payment records. Status: ${response.status}`
+      );
     }
-
     const payments = await response.json();
     return Array.isArray(payments) ? payments : [];
   } catch (error) {
@@ -29,22 +29,20 @@ export async function getAllPaymentRecords(ceoId: number) {
 
 export async function getAllExpenses(ceoId: number) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/expenses/ceo/${ceoId}`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`,
           "Content-Type": "application/json",
         },
       }
     );
-
     if (!response.ok) {
       return { error: `Failed to fetch expenses. Status: ${response.status}` };
     }
-
     const expenses = await response.json();
     return Array.isArray(expenses) ? expenses : [];
   } catch (error) {
@@ -55,13 +53,13 @@ export async function getAllExpenses(ceoId: number) {
 
 export async function getAllCustomers(ceoId: number) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/customer/ceo/${ceoId}`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`,
           "Content-Type": "application/json",
         },
       }
@@ -81,13 +79,13 @@ export async function getAllCustomers(ceoId: number) {
 
 export async function getAllItems(ceoId: number) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/item/ceo/${ceoId}`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`,
           "Content-Type": "application/json",
         },
       }
@@ -107,13 +105,13 @@ export async function getAllItems(ceoId: number) {
 
 export async function getAllProjects(ceoId: number) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(
       `${process.env.SERVER_API}/project/ceo/${ceoId}`,
       {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`,
           "Content-Type": "application/json",
         },
       }

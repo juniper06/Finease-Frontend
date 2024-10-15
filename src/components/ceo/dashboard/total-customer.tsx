@@ -85,9 +85,6 @@ export default function TotalCustomer() {
         }
       } catch (error) {
         console.error("Failed to fetch customers data:", error);
-        toast({
-          description: "Failed to fetch customers data.",
-        });
         setMonthlyCustomers(initialChartData);
         setTotalCustomers(0);
       } finally {

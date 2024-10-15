@@ -1,5 +1,11 @@
 "use server";
 import { auth } from "@/lib/auth";
+import { ok } from "assert";
+import { error } from "console";
+import { headers } from "next/headers";
+import { env } from "process";
+import { json } from "stream/consumers";
+import { map } from "zod";
 
 export async function addExpenses(values: any) {
   try {
@@ -28,21 +34,27 @@ export async function addExpenses(values: any) {
 export async function getAllExpenses(userId: string) {
   try {
     const session = await auth();
-    const response = await fetch(`${process.env.SERVER_API}/expenses`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session?.user.token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.SERVER_API}/expenses/cfo/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       return { error: `Failed to fetch expenses. Status: ${response.status}` };
     }
 
     const expenses = await response.json();
-    return expenses.filter(
-      (expense: { userId: string }) => expense.userId === userId
-    );
+
+    // Ensure category is returned with expense data
+    return expenses.map((expense: any) => ({
+      ...expense,
+      categoryName: expense.category?.categoryName || "Unknown Category", // Make sure category is being returned
+    }));
   } catch (error) {
     console.error("Error fetching expenses:", error);
     return { error: "An unexpected error occurred." };
@@ -128,4 +140,5 @@ export async function editExpenses(id: string, values: any) {
 export type Expenses = {
   id: string;
   amount: number;
+  categoryName: any;
 };

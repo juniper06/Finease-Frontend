@@ -78,10 +78,6 @@ export default function TotalSales() {
         const currentMonthSales = monthlyData[currentMonth]?.sales || 0;
         setTotalSales(currentMonthSales);
       } catch (error) {
-        toast({
-          description: "Failed to fetch payment records.",
-        });
-        // Reset to default data on error
         setMonthlySales(initialChartData);
         setTotalSales(0);
       }

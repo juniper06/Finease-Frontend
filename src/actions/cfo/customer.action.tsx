@@ -31,7 +31,7 @@ export async function addCustomer(values: any) {
 export async function getAllCustomers(userId: string) {
   try {
     const session = await auth(); 
-    const response = await fetch(`${process.env.SERVER_API}/customer`, {
+    const response = await fetch(`${process.env.SERVER_API}/customer/cfo/${userId}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${session?.user.token}`, 
@@ -43,14 +43,13 @@ export async function getAllCustomers(userId: string) {
     }
 
     const customers = await response.json();
-    return customers.filter(
-      (customer: { userId: string }) => customer.userId === userId
-    );
+    return customers; 
   } catch (error) {
     console.error("Error fetching customers:", error);
     return { error: "An unexpected error occurred." };
   }
 }
+
 
 export async function getCustomer(id: string) {
   try {

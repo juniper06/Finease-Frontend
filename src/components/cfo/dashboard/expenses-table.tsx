@@ -2,10 +2,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Activity } from "lucide-react";
 import { getAllExpenses } from "@/actions/cfo/expenses.action";
 import { getAllCategory } from "@/actions/cfo/category.action";
-import { getAllProjects } from "@/actions/cfo/project.action"; // Add this import
+import { getAllProjects } from "@/actions/cfo/project.action";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 import { formatNumber } from "@/lib/utils";
@@ -13,7 +12,7 @@ import { formatNumber } from "@/lib/utils";
 export default function ExpensesAndProjectsTable() {
   const { toast } = useToast();
   const [expensesData, setExpensesData] = useState<any[]>([]);
-  const [projectsData, setProjectsData] = useState<any[]>([]); // New state for projects
+  const [projectsData, setProjectsData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchData = useCallback(async () => {
@@ -23,26 +22,27 @@ export default function ExpensesAndProjectsTable() {
       const [expenses, categories, projects] = await Promise.all([
         getAllExpenses(user.id),
         getAllCategory(user.id),
-        getAllProjects(user.id), // Fetch projects
+        getAllProjects(user.id),
       ]);
+
       const categoryMap = categories.reduce(
-        (
-          acc: { [x: string]: any },
-          category: { id: string | number; categoryName: any }
-        ) => {
+        (acc: { [key: string]: string }, category: any) => {
           acc[category.id] = category.categoryName;
           return acc;
         },
         {}
       );
-      const updatedExpenses = expenses.map(
-        (expense: { categoryId: string | number }) => ({
-          ...expense,
-          categoryName: categoryMap[expense.categoryId] || "Unknown Category",
-        })
-      );
+
+      const updatedExpenses = expenses.map((expense: any) => ({
+        ...expense,
+        categoryName:
+          categoryMap[expense.category?.id] ||
+          expense.category?.categoryName ||
+          "Unknown Category",
+      }));
+
       setExpensesData(updatedExpenses);
-      setProjectsData(projects); // Set projects data
+      setProjectsData(projects);
     } catch (error) {
       console.error("Failed to fetch data", error);
       toast({
@@ -82,11 +82,12 @@ export default function ExpensesAndProjectsTable() {
                 </Avatar>
                 <div className="grid gap-1">
                   <p className="text-sm font-medium leading-none">
-                    {expense.categoryName}
+                    {expense.categoryName}{" "}
+                    <span className="text-primary">(Personal Expenses)</span>
                   </p>
                 </div>
                 <div className="ml-auto font-medium">
-                  - ₱{formatNumber(parseFloat(expense.amount))}
+                  - {formatNumber(parseFloat(expense.amount))}
                 </div>
               </div>
             ))}
@@ -103,12 +104,12 @@ export default function ExpensesAndProjectsTable() {
                 </Avatar>
                 <div className="grid gap-1">
                   <p className="text-sm font-medium leading-none">
-                    {project.projectName}
+                    {project.projectName}{" "}
+                    <span className="text-primary">(Project Expenses)</span>
                   </p>
                 </div>
                 <div className="ml-auto font-medium">
-                  - ₱
-                  {formatNumber(parseFloat(project.totalExpenses))}
+                  - {formatNumber(parseFloat(project.totalExpenses))}
                 </div>
               </div>
             ))}

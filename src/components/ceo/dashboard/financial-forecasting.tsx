@@ -1,7 +1,5 @@
 "use client";
-
 import { useEffect, useState, useCallback } from "react";
-import { TrendingUp } from "lucide-react";
 import {
   Label,
   PolarGrid,
@@ -9,7 +7,6 @@ import {
   RadialBar,
   RadialBarChart,
 } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -20,12 +17,14 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllExpenses, getAllPaymentRecords } from "@/actions/ceo/dashboard.action";
+import {
+  getAllExpenses,
+  getAllPaymentRecords,
+  getAllProjects,
+} from "@/actions/ceo/dashboard.action";
 import { getUserData } from "@/actions/auth/user.action";
 
-const initialChartData = [
-  { runway: 0, fill: "var(--color-runway)" },
-];
+const initialChartData = [{ runway: 0, fill: "var(--color-runway)" }];
 
 const chartConfig = {
   runway: {
@@ -44,47 +43,67 @@ export function FinancialForecasting() {
     try {
       setLoading(true);
       const user = await getUserData();
-      const [expenses, payments] = await Promise.all([
+      const [expenses, payments, projects] = await Promise.all([
         getAllExpenses(user.id),
         getAllPaymentRecords(user.id),
+        getAllProjects(user.id),
       ]);
-  
-      // Ensure expenses and payments are arrays before reducing
-      const expenseData = Array.isArray(expenses)
-        ? expenses.reduce((acc, expense) => {
-            const month = new Date(expense.createdAt).getMonth();
-            acc[month] = (acc[month] || 0) + parseFloat(expense.amount);
-            return acc;
-          }, Array(12).fill(0))
-        : Array(12).fill(0); // Default to an empty array if it's not an array
-  
-      const paymentData = Array.isArray(payments)
-        ? payments.reduce((acc, payment) => {
-            const month = new Date(payment.createdAt).getMonth();
-            acc[month] = (acc[month] || 0) + parseFloat(payment.totalAmount);
-            return acc;
-          }, Array(12).fill(0))
-        : Array(12).fill(0); // Default to an empty array if it's not an array
-  
-      const monthlyNet = paymentData.map((revenue: number, index: string | number) => revenue - expenseData[index]);
-      const totalFunds = monthlyNet.reduce((acc: any, net: any) => acc + net, 0);
-  
-      const averageMonthlyBurnRate = expenseData.reduce((a: any, b: any) => a + b, 0) / 12;
-      const calculatedTotalRunway = Number((totalFunds / averageMonthlyBurnRate).toFixed(2));
-  
-      setChartData([{ runway: calculatedTotalRunway, fill: "var(--color-runway)" }]);
+
+      // Initialize arrays for each month
+      const expenseData = Array(12).fill(0);
+      const paymentData = Array(12).fill(0);
+      const projectExpenseData = Array(12).fill(0);
+
+      // Process expenses
+      if (Array.isArray(expenses)) {
+        expenses.forEach((expense) => {
+          const month = new Date(expense.createdAt).getMonth();
+          expenseData[month] += parseFloat(expense.amount);
+        });
+      }
+
+      // Process payments
+      if (Array.isArray(payments)) {
+        payments.forEach((payment) => {
+          const month = new Date(payment.createdAt).getMonth();
+          paymentData[month] += parseFloat(payment.totalAmount);
+        });
+      }
+
+      // Process project expenses
+      if (Array.isArray(projects)) {
+        projects.forEach((project) => {
+          const month = new Date(project.createdAt).getMonth();
+          projectExpenseData[month] += parseFloat(project.amount || "0");
+        });
+      }
+
+      // Combine regular expenses and project expenses
+      const totalExpenseData = expenseData.map(
+        (expense, index) => expense + projectExpenseData[index]
+      );
+
+      const monthlyNet = paymentData.map(
+        (revenue, index) => revenue - totalExpenseData[index]
+      );
+      const totalFunds = monthlyNet.reduce((acc, net) => acc + net, 0);
+
+      const averageMonthlyBurnRate =
+        totalExpenseData.reduce((a, b) => a + b, 0) / 12;
+      const calculatedTotalRunway = Number(
+        (totalFunds / averageMonthlyBurnRate).toFixed(2)
+      );
+
+      setChartData([
+        { runway: calculatedTotalRunway, fill: "var(--color-runway)" },
+      ]);
       setTotalRunway(calculatedTotalRunway);
     } catch (error) {
       console.error("Failed to fetch financial data", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch financial data. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
-  }, [toast]);  
+  }, [toast]);
 
   useEffect(() => {
     fetchData();
@@ -155,7 +174,8 @@ export function FinancialForecasting() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
-          Showing total runway based on average monthly burn rate
+          Showing total runway based on average monthly burn rate (including
+          project expenses)
         </div>
       </CardFooter>
     </Card>

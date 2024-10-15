@@ -85,9 +85,6 @@ export default function TotalItems() {
         }
       } catch (error) {
         console.error("Failed to fetch items data:", error);
-        toast({
-          description: "Failed to fetch items data.",
-        });
         setMonthlyItems(initialChartData);
         setTotalItems(0);
       } finally {
@@ -105,7 +102,7 @@ export default function TotalItems() {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
-          {isLoading ? "Loading..." : `+ ${(totalItems)}`}
+          {isLoading ? "Loading..." : `+ ${totalItems}`}
         </div>
       </CardContent>
       <CardContent>
@@ -116,7 +113,7 @@ export default function TotalItems() {
               dataKey="month"
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <Tooltip formatter={(value) => `${(value)}`} />
+            <Tooltip formatter={(value) => `${value}`} />
             <Line
               type="monotone"
               dataKey="items"

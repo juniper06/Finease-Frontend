@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getUserData, User } from "@/actions/auth/user.action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatNumber, cn, generateStartupCode } from "@/lib/utils";
+import { formatNumber, cn, generateStartupCode, formatNumberForInput } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon, CirclePlus, Trash2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -435,7 +435,7 @@ export default function BudgetProposalForm() {
                             className="border-none"
                             required
                             {...field}
-                            value={formatNumber(field.value)}
+                            value={formatNumberForInput(field.value)}
                             onChange={(e) => {
                               const rawValue = e.target.value.replace(/,/g, "");
                               const numericValue = parseFloat(rawValue) || 0;

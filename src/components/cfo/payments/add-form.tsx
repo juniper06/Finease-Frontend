@@ -44,8 +44,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { format, parseISO } from "date-fns";
-import { cn, formatNumber, generateStartupCode } from "@/lib/utils";
+import { format, min, parseISO } from "date-fns";
+import {
+  cn,
+  formatNumber,
+  formatNumberForInput,
+  generateStartupCode,
+} from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -55,6 +60,7 @@ import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
 import { Invoice, getInvoicesByCustomerId } from "@/actions/cfo/invoice.action";
 import { addPaymentRecord } from "@/actions/cfo/payment.action";
+import { render } from "react-dom";
 
 const formSchema = z.object({
   customerId: z.string({
@@ -155,13 +161,13 @@ export const AddPaymentRecord = () => {
       try {
         const fetchedInvoices = await getInvoicesByCustomerId(customerId);
         const unpaidInvoices = fetchedInvoices.filter(
-          (invoice: { status: string; }) => invoice.status !== "paid"
+          (invoice: { status: string }) => invoice.status !== "paid"
         );
         setInvoices(unpaidInvoices);
 
         form.setValue(
           "payments",
-          unpaidInvoices.map((invoice: { id: any; }) => ({
+          unpaidInvoices.map((invoice: { id: any }) => ({
             invoiceId: invoice.id,
             amount: 0,
           }))
@@ -393,25 +399,34 @@ export const AddPaymentRecord = () => {
                         <FormControl>
                           <Input
                             className={`text-right md:w-[200px] ${
-                              field.value === invoice.balanceDue ? 'border-green-500' : ''
+                              field.value === invoice.balanceDue
+                                ? "border-green-500"
+                                : ""
                             }`}
                             {...field}
-                            value={formatNumber(field.value)}
+                            // Format the value for display
+                            value={formatNumberForInput(field.value)}
+                            // Handle onChange with number formatting
                             onChange={(e) => {
                               const rawValue = e.target.value.replace(/,/g, "");
                               let newAmount = parseFloat(rawValue) || 0;
 
+                              // Ensure the amount doesn't exceed the balance due
                               newAmount = Math.min(
                                 newAmount,
                                 invoice.balanceDue
                               );
 
+                              // Update the field with the raw number (no formatting)
                               field.onChange(newAmount);
+
+                              // Set the corresponding invoice ID
                               form.setValue(
                                 `payments.${index}.invoiceId`,
                                 Number(invoice.id)
                               );
 
+                              // Calculate the total payment amount
                               const currentPayments =
                                 form.getValues("payments");
                               const newTotal = currentPayments.reduce(
@@ -419,6 +434,12 @@ export const AddPaymentRecord = () => {
                                 0
                               );
                               setTotal(newTotal);
+                            }}
+                            // Handle blur to remove any non-numeric input
+                            onBlur={(e) => {
+                              if (!e.target.value) {
+                                field.onChange(0); // Reset the value to 0 if the input is empty
+                              }
                             }}
                           />
                         </FormControl>
@@ -435,7 +456,7 @@ export const AddPaymentRecord = () => {
                 Total
               </TableCell>
               <TableCell className="text-right">
-                ₱{formatNumber(total)}
+                {formatNumber(total)}
               </TableCell>
             </TableRow>
           </TableFooter>

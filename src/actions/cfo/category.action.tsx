@@ -31,7 +31,7 @@ export async function addCategory(values: any) {
 export async function getAllCategory(userId: string) {
   try {
     const session = await auth();
-    const response = await fetch(`${process.env.SERVER_API}/category`, {
+    const response = await fetch(`${process.env.SERVER_API}/category/user/${userId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session?.user.token}`,
@@ -39,15 +39,11 @@ export async function getAllCategory(userId: string) {
     });
 
     if (!response.ok) {
-      return {
-        error: `Failed to fetch categories. Status: ${response.status}`,
-      };
+      throw new Error(`Failed to fetch categories. Status: ${response.status}`);
     }
 
     const categories = await response.json();
-    return categories.filter(
-      (category: { userId: string }) => category.userId === userId
-    );
+    return categories;
   } catch (error) {
     console.error("Error fetching categories:", error);
     return { error: "An unexpected error occurred." };

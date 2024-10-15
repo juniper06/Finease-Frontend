@@ -43,12 +43,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { cn, formatNumber, generateStartupCode } from "@/lib/utils";
+import { cn, formatNumber, formatNumberForInput, generateStartupCode } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, CirclePlus, CirclePlusIcon, Trash, Trash2Icon } from "lucide-react";
+import {
+  CalendarIcon,
+  CirclePlus,
+  CirclePlusIcon,
+  Trash,
+  Trash2Icon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { AddCategory } from "./add-category";
@@ -59,6 +65,7 @@ import {
   getAllCategory,
 } from "@/actions/cfo/category.action";
 import { addExpenses } from "@/actions/cfo/expenses.action";
+import { error } from "console";
 
 const formSchema = z.object({
   transactionDate: z.string().datetime({
@@ -100,15 +107,18 @@ export const AddExpensesForm = () => {
         const userData = await getUserData();
         setUser(userData);
 
-        const fetchedCategories = await getAllCategory(userData.id);
-        if (fetchedCategories.error) {
-          toast({
-            description: fetchedCategories.error,
-          });
-        } else {
-          setCategories(fetchedCategories);
+        if (userData && userData.id) {
+          const fetchedCategories = await getAllCategory(userData.id);
+          if (fetchedCategories.error) {
+            toast({
+              description: fetchedCategories.error,
+            });
+          } else {
+            setCategories(fetchedCategories);
+          }
         }
       } catch (error) {
+        console.error("Error fetching user data:", error);
         toast({
           description: "Failed to fetch user data.",
         });
@@ -275,7 +285,7 @@ export const AddExpensesForm = () => {
                         </DialogTitle>
                         <Separator />
                         <DialogDescription className="flex justify-center items-center">
-                          <AddCategory onCategoryAdded={refreshCategories}/>
+                          <AddCategory onCategoryAdded={refreshCategories} />
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>
@@ -298,7 +308,7 @@ export const AddExpensesForm = () => {
                   required
                   {...field}
                   className="md:w-[400px]"
-                  value={formatNumber(field.value)}
+                  value={formatNumberForInput(field.value)}
                   onChange={(e) => {
                     const rawValue = e.target.value.replace(/,/g, "");
                     field.onChange(parseFloat(rawValue) || 0);
@@ -341,7 +351,7 @@ export const AddExpensesForm = () => {
                 Reference #
               </FormLabel>
               <FormControl>
-                <Input required {...field} className="md:w-[400px]" readOnly/>
+                <Input required {...field} className="md:w-[400px]" readOnly />
               </FormControl>
             </FormItem>
           )}

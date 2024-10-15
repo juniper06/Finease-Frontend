@@ -1,11 +1,11 @@
-"use client";
+"use client"
 import { getUserData } from "@/actions/auth/user.action";
 import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import React, { useCallback, useEffect, useState } from "react";
 import { expensesColumns } from "./columns";
 import { deleteExpenses, Expenses, getAllExpenses } from "@/actions/cfo/expenses.action";
-import { getAllCategory } from "@/actions/cfo/category.action";
+import { getAllCategory, Category } from "@/actions/cfo/category.action";
 
 export const ExpensesTable = () => {
   const [data, setData] = useState<Expenses[]>([]);
@@ -21,14 +21,19 @@ export const ExpensesTable = () => {
         getAllExpenses(user.id),
         getAllCategory(user.id),
       ]);
-      const categoryMap = categories.reduce((acc: { [x: string]: any; }, category: { id: string | number; categoryName: any; }) => {
+
+      // Create a map of category id to category name
+      const categoryMap = categories.reduce((acc: { [key: string]: string }, category: Category) => {
         acc[category.id] = category.categoryName;
         return acc;
       }, {});
-      const updatedExpenses = expenses.map((expense: { categoryId: string | number; }) => ({
+
+      // Map the expenses and add the category name if it exists in the Expenses type
+      const updatedExpenses = expenses.map((expense: Expenses) => ({
         ...expense,
-        categoryName: categoryMap[expense.categoryId],
+        categoryName: categoryMap[expense.category?.id] || expense.category?.categoryName || 'Unknown Category',
       }));
+
       setData(updatedExpenses);
     } catch (error) {
       console.error("Failed to fetch expenses", error);
@@ -69,5 +74,5 @@ export const ExpensesTable = () => {
     return <div>Loading...</div>;
   }
 
-  return <DataTable columns={expensesColumns} data={data} onDelete={handleDelete}/>;
+  return <DataTable columns={expensesColumns} data={data} onDelete={handleDelete} />;
 };

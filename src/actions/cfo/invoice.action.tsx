@@ -28,20 +28,28 @@ export async function addInvoice(values: any) {
 export async function getAllInvoices(userId: string) {
   try {
     const session = await auth();
-    const response = await fetch(`${process.env.SERVER_API}/invoice`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session?.user.token}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.SERVER_API}/invoice/cfo/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       return { error: `Failed to fetch invoices. Status: ${response.status}` };
     }
 
     const invoices = await response.json();
-    return invoices.filter(
-      (invoice: { userId: string }) => invoice.userId === userId
+    return invoices.map(
+      (invoice: { customer: { firstName: any; lastName: any } }) => ({
+        ...invoice,
+        customerName: invoice.customer
+          ? `${invoice.customer.firstName} ${invoice.customer.lastName}`
+          : "Unknown Customer",
+      })
     );
   } catch (error) {
     console.error("Error fetching invoices:", error);

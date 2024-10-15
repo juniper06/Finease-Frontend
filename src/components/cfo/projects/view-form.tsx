@@ -29,7 +29,7 @@ export const ViewSpecificProject = ({ id }: Props) => {
       try {
         setLoading(true);
         const data = await getProject(id);
-        if ('error' in data) {
+        if ("error" in data) {
           toast({
             title: "Error",
             description: data.error,
@@ -110,16 +110,24 @@ export const ViewSpecificProject = ({ id }: Props) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {project.projectUsers.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell>{user.userName}</TableCell>
-                  <TableCell>{user.userEmail}</TableCell>
+              {project.projectUsers && project.projectUsers.length > 0 ? (
+                project.projectUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.userName}</TableCell>
+                    <TableCell>{user.userEmail}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={2} className="text-center">
+                    No users found.
+                  </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
 
-          <h1 className="md:text-[25px] mt-11">Project Resoures</h1>
+          <h1 className="md:text-[25px] mt-11">Project Resources</h1>
           <Table>
             <TableHeader>
               <TableRow>
@@ -129,13 +137,22 @@ export const ViewSpecificProject = ({ id }: Props) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {project.ProjectResources.map((resource, index) => (
-                <TableRow key={index}>
-                  <TableCell>{resource.resourceCategory}</TableCell>
-                  <TableCell>{resource.subCategory}</TableCell>
-                  <TableCell>{formatNumber(resource.expense)}</TableCell>
+              {project.projectResources &&
+              project.projectResources.length > 0 ? (
+                project.projectResources.map((resource) => (
+                  <TableRow key={resource.id}>
+                    <TableCell>{resource.resourceCategory}</TableCell>
+                    <TableCell>{resource.subCategory}</TableCell>
+                    <TableCell>{formatNumber(resource.expense)}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center">
+                    No resources found.
+                  </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

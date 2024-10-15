@@ -91,7 +91,7 @@ export const ViewStartup = ({ id }: Props) => {
               </div>
               <div className="w-full">
                 <h5 className="font-semibold text-[25px]">
-                  {startup.ceo.firstName} {startup.ceo.lastName}
+                  {/* {startup.ceo.firstName} {startup.ceo.lastName} */}
                 </h5>
                 <span className="font-extralight text-primary">
                   Chief Executive Officer
@@ -170,7 +170,7 @@ export const ViewStartup = ({ id }: Props) => {
           </div>
           <div className="w-full">
             <h1 className="md:text-[25px]">Chief Financial Officers</h1>
-            <Table>
+            {/* <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -187,7 +187,7 @@ export const ViewStartup = ({ id }: Props) => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+            </Table> */}
           </div>
         </div>
       </div>

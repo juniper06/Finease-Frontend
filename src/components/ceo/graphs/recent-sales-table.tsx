@@ -1,25 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getUserData, getAllUser } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
 import { formatNumber } from "@/lib/utils";
 import { getAllPaymentRecords } from "@/actions/ceo/graphs.action";
-
-interface User {
-  id: string; // or number, depending on your user ID type
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-interface UserMap {
-  [key: string]: {
-    name: string;
-    email: string;
-  };
-}
 
 interface RecentSalesProps {
   startupId: number;
@@ -34,25 +19,9 @@ export default function RecentSalesTable({ startupId }: RecentSalesProps) {
     async function fetchData() {
       try {
         setLoading(true);
-        const user = await getUserData();
         const payments = await getAllPaymentRecords(startupId);
-        const users = await getAllUser(user.id);
 
-        const userMap: UserMap = users.reduce((acc, user: User) => {
-          acc[user.id] = {
-            name: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-          };
-          return acc;
-        }, {} as UserMap); // Type assertion here
-
-        const updatedPayments = payments.map((payment: { userId: string | number; }) => ({
-          ...payment,
-          userName: userMap[payment.userId]?.name || "Unknown User",
-          userEmail: userMap[payment.userId]?.email || "N/A",
-        }));
-
-        setData(updatedPayments);
+        setData(payments);
       } catch (error) {
         console.error("Failed to fetch payment records", error);
         toast({
@@ -91,7 +60,7 @@ export default function RecentSalesTable({ startupId }: RecentSalesProps) {
                 </p>
               </div>
               <div className="ml-auto font-medium">
-                + ₱{formatNumber(payment.totalAmount.toFixed(2))}
+                + {formatNumber(payment.totalAmount.toFixed(2))}
               </div>
             </div>
           ))

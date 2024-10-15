@@ -19,10 +19,7 @@ export const StartupTable = () => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const user = await getUserData();
-      const userId = Number(user.id);
-      console.log("User ID:", userId); // Debugging
-      const startups = await getAllStartups(userId);
+      const startups = await getAllStartups(); // No need to filter anymore
       console.log("Fetched Startups:", startups); // Debugging
       setData(startups);
     } catch (error) {

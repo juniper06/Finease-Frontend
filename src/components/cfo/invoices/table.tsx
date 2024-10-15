@@ -1,11 +1,10 @@
-"use client";
-import { getAllCustomers } from "@/actions/cfo/customer.action";
-import { getUserData } from "@/actions/auth/user.action";
+'use client'
+import React, { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
-import React, { useCallback, useEffect, useState } from "react";
-import {  invoicesColumns } from "./columns";
+import { invoicesColumns } from "./columns";
 import { deleteInvoice, getAllInvoices, Invoice } from "@/actions/cfo/invoice.action";
+import { getUserData } from "@/actions/auth/user.action";
 
 export const InvoiceTable = () => {
   const [data, setData] = useState<Invoice[]>([]);
@@ -17,22 +16,18 @@ export const InvoiceTable = () => {
     try {
       setLoading(true);
       const user = await getUserData();
-      const [invoices, customers] = await Promise.all([
-        getAllInvoices(user.id),
-        getAllCustomers(user.id),
-      ]);
+      const invoices = await getAllInvoices(user.id);
 
-      const customerMap = customers.reduce((acc: { [x: string]: string; }, customer: { id: string | number; firstName: any; lastName: any; }) => {
-        acc[customer.id] = `${customer.firstName} ${customer.lastName}`;
-        return acc;
-      }, {});
-
-      const updatedInvoices = invoices.map((invoice: { customerId: string | number; }) => ({
-        ...invoice,
-        customerName: customerMap[invoice.customerId],
-      }));
-
-      setData(updatedInvoices);
+      if (Array.isArray(invoices)) {
+        setData(invoices);
+      } else {
+        console.error("Unexpected invoices data:", invoices);
+        toast({
+          title: "Error",
+          description: "Failed to fetch invoices. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch invoices", error);
       toast({
@@ -72,5 +67,5 @@ export const InvoiceTable = () => {
     return <div>Loading...</div>;
   }
 
-  return <DataTable columns={invoicesColumns} data={data} onDelete={handleDelete}/>;
+  return <DataTable columns={invoicesColumns} data={data} onDelete={handleDelete} />;
 };

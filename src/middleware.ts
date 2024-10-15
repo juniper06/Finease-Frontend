@@ -8,7 +8,7 @@ import {
   publicRoute,
 } from "@/lib/routes";
 
-type UserRole = 'CFO' | 'CEO' | 'ADMIN' | 'GUEST';
+type UserRole = 'CFO' | 'CEO';
 
 interface CustomSession {
   user: {
@@ -19,8 +19,6 @@ interface CustomSession {
 const roleProtectedRoutes: Record<UserRole, string[]> = {
   CFO: ["/", "/customers", "/invoices", "/items", "/payments-received", "/expenses-tracking"],
   CEO: ["/ceo", "/ceo/forecasting", "/ceo/startup"],
-  ADMIN: ["/admin"],
-  GUEST: ["/guest"],
 };
 
 export default auth((req) => {

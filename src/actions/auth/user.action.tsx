@@ -1,5 +1,9 @@
 "use server";
 import { auth } from "@/lib/auth";
+import { log } from "console";
+import { headers } from "next/headers";
+import { env } from "process";
+import { json } from "stream/consumers";
 
 export async function addUser(values: any) {
   const session = await auth();
@@ -29,21 +33,31 @@ export async function addUser(values: any) {
 
 export async function getByAuth() {
   const session = await auth();
-  const response = await fetch(`${process.env.SERVER_API}/user/get-by-auth`, {
+  console.log("Session data:", session);  // Check session data
+  const token = session?.user.token;
+  console.log("Token:", token);  // Log the token
+  if (!token) {
+    throw new Error("No token found in session.");
+  }
+
+  const response = await fetch(`${process.env.SERVER_API}/users/current`, {
     headers: {
-      "Authorization": `Bearer ${session?.user.token}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
-  return response.json();
+  const result = await response.json();
+  console.log("Backend response:", result); // Log the response for debugging
+  return result;
 }
 
 export async function getUserData() {
   const result = await getByAuth();
-  if (result.error) {
-    throw new Error(result.error.message);
+  console.log(result)
+  if (!result) {
+    throw new Error(result);
   }
-  return result.data;
+  return result;
 }
 
 export async function getAllUser(userId: string): Promise<User[]> {

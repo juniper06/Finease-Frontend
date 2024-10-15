@@ -5,6 +5,8 @@ import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import React, { useCallback, useEffect, useState } from "react";
 import {  customerColumns } from "./columns";
+import { error } from "console";
+import { title } from "process";
 
 export const CustomerTable = () => {
   const [data, setData] = useState<Customer[]>([]);
@@ -13,22 +15,25 @@ export const CustomerTable = () => {
   const [tableKey, setTableKey] = useState(0);
 
   const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const user = await getUserData();
-      const customers = await getAllCustomers(user.id);
-      setData(customers);
-    } catch (error) {
-      console.error("Failed to fetch customers", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch items. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+  try {
+    setLoading(true);
+    const user = await getUserData(); // Get the logged-in user
+    const customers = await getAllCustomers(user.id); // Fetch customers for that specific CFO
+    if (customers.error) {
+      throw new Error(customers.error); // Handle any error returned from the action
     }
-  }, [toast]);
+    setData(customers);
+  } catch (error) {
+    console.error("Failed to fetch customers", error);
+    toast({
+      title: "Error",
+      description: "Failed to fetch customers. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+}, [toast]);
 
   useEffect(() => {
     fetchData();

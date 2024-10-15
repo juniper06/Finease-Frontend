@@ -3,11 +3,11 @@ import { auth } from "@/lib/auth";
 
 export async function addPaymentRecord(values: any) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/payment`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${session?.user.token}`, 
+        Authorization: `Bearer ${session?.user.token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
@@ -27,21 +27,31 @@ export async function addPaymentRecord(values: any) {
 
 export async function getAllPaymentRecords(userId: string) {
   try {
-    const session = await auth(); 
-    const response = await fetch(`${process.env.SERVER_API}/payment`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${session?.user.token}`, 
-      },
-    });
+    const session = await auth();
+    const response = await fetch(
+      `${process.env.SERVER_API}/payment/cfo/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      }
+    );
 
     if (!response.ok) {
-      return { error: `Failed to fetch payment records. Status: ${response.status}` };
+      return {
+        error: `Failed to fetch payment records. Status: ${response.status}`,
+      };
     }
 
     const payments = await response.json();
-    return payments.filter(
-      (payment: { userId: string }) => payment.userId === userId
+    return payments.map(
+      (payment: { customer: { firstName: any; lastName: any } }) => ({
+        ...payment,
+        customerName: payment.customer
+          ? `${payment.customer.firstName} ${payment.customer.lastName}`
+          : "Unknown Customer",
+      })
     );
   } catch (error) {
     console.error("Error fetching payment records:", error);
@@ -51,11 +61,11 @@ export async function getAllPaymentRecords(userId: string) {
 
 export async function getPaymentRecord(id: string) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${session?.user.token}`, 
+        Authorization: `Bearer ${session?.user.token}`,
       },
     });
 
@@ -75,11 +85,11 @@ export async function getPaymentRecord(id: string) {
 
 export async function deletePaymentRecord(id: string) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${session?.user.token}`, 
+        Authorization: `Bearer ${session?.user.token}`,
       },
     });
 
@@ -100,11 +110,11 @@ export async function deletePaymentRecord(id: string) {
 
 export async function editPaymentRecord(id: string, values: any) {
   try {
-    const session = await auth(); 
+    const session = await auth();
     const response = await fetch(`${process.env.SERVER_API}/payment/${id}`, {
       method: "PATCH",
       headers: {
-        "Authorization": `Bearer ${session?.user.token}`, 
+        Authorization: `Bearer ${session?.user.token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),

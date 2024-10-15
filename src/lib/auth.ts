@@ -1,3 +1,4 @@
+import { log } from "console";
 import NextAuth, { Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -27,7 +28,7 @@ export const {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        const res = await fetch(`${process.env.SERVER_API}/auth/login`, {
+        const res = await fetch(`${process.env.SERVER_API}/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -38,11 +39,13 @@ export const {
           }),
         });
         const result = await res.json();
-        if (res.status === 200) {
+        if (res.ok && result.jwt) {
+          console.log("JWT received: ", result.jwt);
           return {
-            ...result.data,
-            role: result.data.role,
-            token: result.data.token,
+            id: result.userId,
+            email: credentials.email,
+            role: result.role,
+            token: result.jwt,
           };
         }
         return null;
@@ -52,17 +55,21 @@ export const {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        return {
-          ...token,
-          user,
-        };
+        console.log("User in JWT callback:", user);
+        token.id = user.id;
+        token.email = user.email;
+        token.role = user.role;
+        token.token = user.token;
       }
       return token;
     },
     session: async ({ session, token }) => {
-      if (token.user) {
-        session.user = token.user as any;
-      }
+      session.user = {
+        id: token.id,
+        email: token.email,
+        role: token.role,
+        token: token.token, // Pass the token to the frontend
+      };
       return session;
     },
   },

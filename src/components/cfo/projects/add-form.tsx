@@ -48,7 +48,7 @@ import {
 import { CirclePlus, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { addProject } from "@/actions/cfo/project.action";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, formatNumberForInput } from "@/lib/utils";
 
 const formSchema = z.object({
   projectName: z.string({
@@ -658,7 +658,7 @@ export const AddProjectForm = () => {
                             className="w-[200px] text-right"
                             required
                             {...field}
-                            value={formatNumber(field.value)}
+                            value={formatNumberForInput(field.value)}
                             onChange={(e) => {
                               const rawValue = e.target.value.replace(/,/g, "");
                               const numValue = parseFloat(rawValue) || 0;

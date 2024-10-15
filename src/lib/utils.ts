@@ -15,6 +15,12 @@ export const formatNumber = (number: number) => {
   return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 2 }).format(number);
 };
 
+export const formatNumberForInput = (number: number | string) => {
+  const parsedNumber = typeof number === "string" ? parseFloat(number.replace(/,/g, '')) : number;
+  if (isNaN(parsedNumber)) return '';
+  
+  return parsedNumber.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+};
 
 export const generateStartupCode = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

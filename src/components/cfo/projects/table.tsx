@@ -9,11 +9,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ProjectsColumns } from "./columns";
 import { getUserData } from "@/actions/auth/user.action";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllCustomers, Customer } from "@/actions/cfo/customer.action";
 
 export const ProjectsTable = () => {
   const [data, setData] = useState<Project[]>([]);
-  const [customers, setCustomers] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [tableKey, setTableKey] = useState(0);
@@ -23,20 +21,17 @@ export const ProjectsTable = () => {
       setLoading(true);
       const user = await getUserData();
       const projects = await getAllProjects(user.id);
-      const customers = await getAllCustomers(user.id);
 
-      const customerMap = customers.reduce((acc: { [key: string]: string }, customer: Customer) => {
-        acc[customer.id] = `${customer.firstName} ${customer.lastName}`;
-        return acc;
-      }, {});
-
-      const updatedProjects = projects.map((project: { customerId: string | number; }) => ({
-        ...project,
-        customerName: customerMap[project.customerId],
-      }));
-
-      setData(updatedProjects);
-      setCustomers(customerMap);
+      if (Array.isArray(projects)) {
+        setData(projects);
+      } else {
+        console.error("Unexpected projects data:", projects);
+        toast({
+          title: "Error",
+          description: "Failed to fetch projects. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch projects", error);
       toast({
@@ -66,7 +61,8 @@ export const ProjectsTable = () => {
       console.error("Failed to delete project:", result.error);
       toast({
         title: "Error",
-        description: result.error || "Failed to delete project. Please try again.",
+        description:
+          result.error || "Failed to delete project. Please try again.",
         variant: "destructive",
       });
     }
@@ -77,6 +73,11 @@ export const ProjectsTable = () => {
   }
 
   return (
-    <DataTable columns={ProjectsColumns} data={data} onDelete={handleDelete} />
+    <DataTable
+      key={tableKey}
+      columns={ProjectsColumns}
+      data={data}
+      onDelete={handleDelete}
+    />
   );
 };

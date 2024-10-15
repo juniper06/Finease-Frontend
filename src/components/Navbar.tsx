@@ -30,6 +30,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "./theme-button";
 import { signOut } from "next-auth/react";
 import { getUserData } from "@/actions/auth/user.action";
+import { log } from "console";
 
 interface LayoutProps {
   children: ReactNode;
@@ -42,7 +43,11 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     async function fetchUser() {
       const userData = await getUserData();
-      setUser(userData);
+      console.log("Fetched user:", userData);  // Ensure this logs the correct user data
+      if (userData) {
+        setUser(userData);
+        console.log("User Role:", userData?.role);  // Log user role after setting state
+      }
     }
     fetchUser();
   }, []);
@@ -63,6 +68,7 @@ export default function Layout({ children }: LayoutProps) {
     { href: "/guest", label: "Home", icon: Home, roles: ["GUEST"] },
   ];
 
+  // Conditionally render navbar links based on user data
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -75,21 +81,22 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4 md:text-lg gap-y-4">
-              {user && navLinks.map(
-                (link) =>
-                  link.roles.includes(user.role) && (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-foreground ${
-                        pathname === link.href ? "text-white bg-primary" : "text-muted-foreground"
-                      }`}
-                    >
-                      <link.icon className="h-6 w-6" />
-                      {link.label}
-                    </Link>
-                  )
-              )}
+              {user &&
+                navLinks.map(
+                  (link) =>
+                    link.roles.includes(user.role) && (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-foreground ${
+                          pathname === link.href ? "text-white bg-primary" : "text-muted-foreground"
+                        }`}
+                      >
+                        <link.icon className="h-6 w-6" />
+                        {link.label}
+                      </Link>
+                    )
+                )}
             </nav>
           </div>
         </div>
@@ -109,19 +116,20 @@ export default function Layout({ children }: LayoutProps) {
                   <Package2 className="h-6 w-6" />
                   <span className="sr-only">FinEase</span>
                 </Link>
-                {user && navLinks.map(
-                  (link) =>
-                    link.roles.includes(user.role) && (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                      >
-                        <link.icon className="h-5 w-5" />
-                        {link.label}
-                      </Link>
-                    )
-                )}
+                {user &&
+                  navLinks.map(
+                    (link) =>
+                      link.roles.includes(user.role) && (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                        >
+                          <link.icon className="h-5 w-5" />
+                          {link.label}
+                        </Link>
+                      )
+                  )}
               </nav>
             </SheetContent>
           </Sheet>

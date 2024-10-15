@@ -1,10 +1,13 @@
 "use client";
-import { getAllCustomers } from "@/actions/cfo/customer.action";
 import { getUserData } from "@/actions/auth/user.action";
 import { DataTable } from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import React, { useCallback, useEffect, useState } from "react";
-import { Payment, deletePaymentRecord, getAllPaymentRecords } from "@/actions/cfo/payment.action";
+import {
+  Payment,
+  deletePaymentRecord,
+  getAllPaymentRecords,
+} from "@/actions/cfo/payment.action";
 import { ReceivedPaymentsColumns } from "./columns";
 
 export const PaymentsTable = () => {
@@ -17,26 +20,23 @@ export const PaymentsTable = () => {
     try {
       setLoading(true);
       const user = await getUserData();
-      const payments = await getAllPaymentRecords(user.id);
-      const customers = await getAllCustomers(user.id);
+      const payments = await getAllPaymentRecords(user.id); // Fetch payments with customer names
 
-      const customerMap = customers.reduce((acc: { [x: string]: string; }, customer: { id: string | number; firstName: any; lastName: any; }) => {
-        acc[customer.id] = `${customer.firstName} ${customer.lastName}`;
-        return acc;
-      }, {});
-
-      const updatedPayments = payments.map((payment: { customerId: string | number; invoices: { invoiceNumber: any; }; }) => ({
-        ...payment,
-        customerName: customerMap[payment.customerId],
-        invoiceNumber: payment.invoices?.invoiceNumber,
-      }));
-
-      setData(updatedPayments);
+      if (Array.isArray(payments)) {
+        setData(payments);
+      } else {
+        console.error("Unexpected payments data:", payments);
+        toast({
+          title: "Error",
+          description: "Failed to fetch payments. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch payment records", error);
       toast({
         title: "Error",
-        description: "Failed to fetch items. Please try again.",
+        description: "Failed to fetch payments. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -61,7 +61,8 @@ export const PaymentsTable = () => {
       console.error("Failed to delete payment record:", result.error);
       toast({
         title: "Error",
-        description: result.error || "Failed to delete payment record. Please try again.",
+        description:
+          result.error || "Failed to delete payment record. Please try again.",
         variant: "destructive",
       });
     }
@@ -71,5 +72,11 @@ export const PaymentsTable = () => {
     return <div>Loading...</div>;
   }
 
-  return <DataTable columns={ReceivedPaymentsColumns} data={data} onDelete={handleDelete}/>;
+  return (
+    <DataTable
+      columns={ReceivedPaymentsColumns}
+      data={data}
+      onDelete={handleDelete}
+    />
+  );
 };

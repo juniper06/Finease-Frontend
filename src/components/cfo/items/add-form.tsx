@@ -42,7 +42,7 @@ import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { User, getUserData } from "@/actions/auth/user.action";
 import { addItem } from "@/actions/cfo/item.action";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, formatNumberForInput } from "@/lib/utils";
 
 const formSchema = z.object({
   type: z.string({
@@ -233,7 +233,7 @@ export const AddItemForm = () => {
                   onChange={(e) => {
                     const rawValue = e.target.value.replace(/[^0-9]/g, "");
                     const numValue = parseInt(rawValue, 10);
-                    setDisplayValue(formatNumber(numValue));
+                    setDisplayValue(formatNumberForInput(numValue));
                     field.onChange(numValue);
                   }}
                 />

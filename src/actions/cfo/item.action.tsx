@@ -28,7 +28,7 @@ export async function addItem(values: any) {
 export async function getAllItems(userId: string) {
   try {
     const session = await auth(); 
-    const response = await fetch(`${process.env.SERVER_API}/item`, {
+    const response = await fetch(`${process.env.SERVER_API}/item/cfo/${userId}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${session?.user.token}`,
@@ -40,7 +40,7 @@ export async function getAllItems(userId: string) {
     }
 
     const items = await response.json();
-    return items.filter((item: { userId: string }) => item.userId === userId);
+    return items;
   } catch (error) {
     console.error("Error fetching items:", error);
     return { error: "An unexpected error occurred." };

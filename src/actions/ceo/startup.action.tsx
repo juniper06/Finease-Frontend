@@ -1,9 +1,9 @@
 "use server";
-
 import { auth } from "@/lib/auth";
 
+
 export async function addStartup(values: any) {
-  const session = await auth(); 
+  const session = await auth();
   const response = await fetch(`${process.env.SERVER_API}/startup`, {
     method: "POST",
     headers: {
@@ -27,10 +27,9 @@ export async function addStartup(values: any) {
   return response.json();
 }
 
-export async function getAllStartups(userId: number) {
-  // Ensure userId is a number
-  const session = await auth(); 
-  const response = await fetch(`${process.env.SERVER_API}/startup`, {
+export async function getAllStartups() {
+  const session = await auth();
+  const response = await fetch(`${process.env.SERVER_API}/startups`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${session?.user.token}`,
@@ -49,16 +48,11 @@ export async function getAllStartups(userId: number) {
     };
   }
 
-  const startups = await response.json();
-
-  // Filter startups where ceoId matches the current user's ID
-  return startups.filter(
-    (startup: { ceoId: number }) => startup.ceoId === userId
-  );
+  return response.json(); // The backend will already filter startups by CEO
 }
 
 export async function deleteStartup(id: string) {
-  const session = await auth(); 
+  const session = await auth();
   try {
     const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
       method: "DELETE",
@@ -85,8 +79,8 @@ export async function deleteStartup(id: string) {
 }
 
 export async function getStartup(id: string) {
-  const session = await auth(); 
-  const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
+  const session = await auth();
+  const response = await fetch(`${process.env.SERVER_API}/startups/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${session?.user.token}`,
@@ -108,7 +102,7 @@ export async function getStartup(id: string) {
 }
 
 export async function editStartup(id: string, values: any) {
-  const session = await auth(); 
+  const session = await auth();
   try {
     const response = await fetch(`${process.env.SERVER_API}/startup/${id}`, {
       method: "PATCH",
@@ -136,7 +130,7 @@ export async function editStartup(id: string, values: any) {
 }
 
 export async function getCFOsForStartup(startupId: number) {
-  const session = await auth(); 
+  const session = await auth();
   const response = await fetch(
     `${process.env.SERVER_API}/startup/${startupId}/cfo`,
     {
