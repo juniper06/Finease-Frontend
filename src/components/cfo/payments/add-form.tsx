@@ -60,7 +60,6 @@ import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
 import { Invoice, getInvoicesByCustomerId } from "@/actions/cfo/invoice.action";
 import { addPaymentRecord } from "@/actions/cfo/payment.action";
-import { render } from "react-dom";
 
 const formSchema = z.object({
   customerId: z.string({

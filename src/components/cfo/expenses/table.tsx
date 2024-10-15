@@ -31,7 +31,7 @@ export const ExpensesTable = () => {
       // Map the expenses and add the category name if it exists in the Expenses type
       const updatedExpenses = expenses.map((expense: Expenses) => ({
         ...expense,
-        categoryName: categoryMap[expense.category?.id] || expense.category?.categoryName || 'Unknown Category',
+        categoryName: categoryMap[expense?.category?.id] || expense?.category?.categoryName || 'Unknown Category',
       }));
 
       setData(updatedExpenses);

@@ -154,4 +154,5 @@ export type Project = {
     subCategory: string;
     expense: number;
   }[];
+  customerId: string;
 };

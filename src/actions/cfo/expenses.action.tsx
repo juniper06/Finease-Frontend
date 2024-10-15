@@ -140,5 +140,5 @@ export async function editExpenses(id: string, values: any) {
 export type Expenses = {
   id: string;
   amount: number;
-  categoryName: any;
+  category: {categoryName: string, id: string}
 };

@@ -1,5 +1,4 @@
-import { log } from "console";
-import NextAuth, { Session, User } from "next-auth";
+import NextAuth, { AuthError, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 declare module "next-auth" {
@@ -28,14 +27,15 @@ export const {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
+        const { email, password } = credentials;
         const res = await fetch(`${process.env.SERVER_API}/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: credentials.email,
-            password: credentials.password,
+            email: email,
+            password: password,
           }),
         });
         const result = await res.json();
@@ -43,33 +43,39 @@ export const {
           console.log("JWT received: ", result.jwt);
           return {
             id: result.userId,
-            email: credentials.email,
+            email: result.email,
             role: result.role,
             token: result.jwt,
           };
         }
-        return null;
+        throw new AuthError("Invalid Credential");
       },
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ trigger, token, session, user }) => {
+      if (trigger === "update" && session) {
+        return { ...token, user: session.user };
+      }
       if (user) {
-        console.log("User in JWT callback:", user);
-        token.id = user.id;
-        token.email = user.email;
-        token.role = user.role;
-        token.token = user.token;
+        return {
+          ...token,
+          user,
+        };
       }
       return token;
     },
-    session: async ({ session, token }) => {
-      session.user = {
-        id: token.id,
-        email: token.email,
-        role: token.role,
-        token: token.token, // Pass the token to the frontend
-      };
+    session: async ({ trigger, newSession, session, token }) => {
+      if (trigger === "update" && newSession) {
+        return { ...session, ...newSession };
+      }
+      if (token) {
+        return {
+          ...session,
+          ...token,
+        };
+      }
+
       return session;
     },
   },
