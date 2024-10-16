@@ -53,35 +53,41 @@ import { formatNumber, formatNumberForInput } from "@/lib/utils";
 const formSchema = z.object({
   projectName: z.string({
     message: "Project Name is Required!",
-  }),
+  }).min(3, "Project Name must be at least 3 characters").max(50, "Project Name must be at most 50 characters"),
+
   projectCode: z.string({
     message: "Project Code is Required!",
-  }),
+  }).length(6, "Project Code must be exactly 6 characters"),
+
   customerId: z.string({
     message: "Customer is Required!",
   }),
+
   billingMethod: z.string({
     message: "Billing Method is Required!",
   }),
+
   description: z.string({
-    message: "description is Required!",
-  }),
+    message: "Description is Required!",
+  }).min(5, "Description must be at least 5 characters").max(200, "Description must be at most 200 characters"),
+
   users: z.array(
     z.object({
-      userName: z.string(),
-      userEmail: z.string(),
+      userName: z.string().min(3, "User Name must be at least 3 characters").max(20, "User Name must be at most 20 characters"),
+      userEmail: z.string().email("Invalid email format").max(50, "Email must be at most 50 characters"),
     })
   ),
+
   resources: z.array(
     z.object({
       resourceCategory: z.string(),
       subCategory: z.string(),
-      expense: z.number(),
+      expense: z.number().min(1, "Expense must be at least 1"), // You could add constraints for the expense here
     })
   ),
-  totalExpenses: z.number(),
-});
 
+  totalExpenses: z.number().min(0, "Total expenses must be at least 0"),
+});
 export const AddProjectForm = () => {
   const { toast } = useToast();
   const router = useRouter();

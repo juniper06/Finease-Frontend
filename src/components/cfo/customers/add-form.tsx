@@ -35,38 +35,62 @@ import { User, getUserData } from "@/actions/auth/user.action";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addCustomer } from "@/actions/cfo/customer.action";
+import { render } from "react-dom";
 
 const formSchema = z.object({
-  type: z.string({
-    message: "Please select an Customer Type to display.",
-  }),
-  firstName: z.string().min(1, {
-    message: "Customer First Name is Required",
-  }),
-  lastName: z.string().min(1, {
-    message: "Customer Last Name is Required",
-  }),
-  companyName: z.string().min(1, {
-    message: "Company Name is Required",
-  }),
-  email: z.string().min(1, {
-    message: "Customer Email is Required",
-  }),
-  phoneNumber: z.string().min(1, {
-    message: "Customer Phone Number is Required",
-  }),
-  country: z.string().min(1, {
-    message: "Customer Address is Required",
-  }),
-  city: z.string().min(1, {
-    message: "City is Required",
-  }),
-  state: z.string().min(1, {
-    message: "State is Required",
-  }),
-  zipCode: z.coerce.number({
-    message: "Zip Code is Required",
-  }),
+  type: z.string().nonempty({ message: "Please select a Customer Type." }),
+  firstName: z
+    .string()
+    .min(1, { message: "Customer First Name is Required" })
+    .regex(/^[a-zA-Z\s-]+$/, {
+      message:
+        "First Name should only contain alphabetic characters, spaces, or hyphens.",
+    }),
+  lastName: z
+    .string()
+    .min(1, { message: "Customer Last Name is Required" })
+    .regex(/^[a-zA-Z\s-]+$/, {
+      message:
+        "Last Name should only contain alphabetic characters, spaces, or hyphens.",
+    }),
+  companyName: z
+    .string()
+    .min(1, { message: "Company Name is Required" })
+    .regex(/^[a-zA-Z0-9\s-]+$/, {
+      message: "Company Name should not contain special characters.",
+    }),
+  email: z
+    .string()
+    .min(1, { message: "Customer Email is Required" })
+    .email({ message: "Please enter a valid email." }),
+  phoneNumber: z
+    .string()
+    .min(1, { message: "Customer Phone Number is Required" })
+    .regex(/^\d+$/, { message: "Phone Number should contain only digits." }),
+  country: z
+    .string()
+    .min(1, { message: "Country is Required" })
+    .regex(/^[a-zA-Z\s-]+$/, {
+      message:
+        "Country should only contain alphabetic characters, spaces, or hyphens.",
+    }),
+  city: z
+    .string()
+    .min(1, { message: "City is Required" })
+    .regex(/^[a-zA-Z\s-]+$/, {
+      message:
+        "City should only contain alphabetic characters, spaces, or hyphens.",
+    }),
+  state: z
+    .string()
+    .min(1, { message: "State is Required" })
+    .regex(/^[a-zA-Z\s-]+$/, {
+      message:
+        "State should only contain alphabetic characters, spaces, or hyphens.",
+    }),
+  zipCode: z.coerce
+    .number({ message: "Zip Code is Required" })
+    .int({ message: "Zip Code must be a valid integer." }),
 });
 
 export default function CustomerForm() {
@@ -106,21 +130,43 @@ export default function CustomerForm() {
   }, [toast]);
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!user) {
+    const errors = form.formState.errors;
+
+    // If there are validation errors, notify the user about them
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors)
+        .map((error) => {
+          return `${error?.message}`;
+        })
+        .join(", ");
+
       toast({
-        description: "You need to be logged in to create an customer.",
+        description: `Fix the following errors: ${errorMessages}`,
+        variant: "destructive",
       });
       return;
     }
+
+    if (!user) {
+      toast({
+        description: "You need to be logged in to create a customer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const customerData = {
       ...values,
       userId: user.id,
       startupId: user.startupId,
     };
+
     const response = await addCustomer(customerData);
+
     if (response.error) {
       toast({
-        description: "Failed to add Customer",
+        description: "Failed to add Customer. Please try again.",
+        variant: "destructive",
       });
     } else {
       toast({
@@ -154,7 +200,7 @@ export default function CustomerForm() {
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Customer Type
                 </FormLabel>
@@ -173,6 +219,7 @@ export default function CustomerForm() {
                     <SelectItem value="Individual">Individual</SelectItem>
                   </SelectContent>
                 </Select>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -180,7 +227,7 @@ export default function CustomerForm() {
             control={form.control}
             name="companyName"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Company Name
                 </FormLabel>
@@ -195,7 +242,7 @@ export default function CustomerForm() {
               control={form.control}
               name="firstName"
               render={({ field }) => (
-                <FormItem className="md:flex md:items-center">
+                <FormItem className="md:flex md:flex-col md:items-start">
                   <FormLabel className="md:w-48 md:text-lg font-light">
                     Customer Name
                   </FormLabel>
@@ -207,6 +254,7 @@ export default function CustomerForm() {
                       className="md:w-60 w-40"
                     />
                   </FormControl>
+                  <FormMessage className="text-red-600 mt-1" />
                 </FormItem>
               )}
             />
@@ -223,6 +271,7 @@ export default function CustomerForm() {
                       className="md:w-60 w-40"
                     />
                   </FormControl>
+                  <FormMessage className="text-red-600 mt-1" />
                 </FormItem>
               )}
             />
@@ -231,13 +280,14 @@ export default function CustomerForm() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Customer Email
                 </FormLabel>
                 <FormControl>
                   <Input required {...field} className="md:w-[500px]" />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -245,7 +295,7 @@ export default function CustomerForm() {
             control={form.control}
             name="phoneNumber"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Customer Phone
                 </FormLabel>
@@ -257,23 +307,27 @@ export default function CustomerForm() {
                     className="md:w-[500px]"
                   />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
         </div>
         <div className="flex flex-col md:gap-y-5 gap-y-3">
-          <h1 className="md:text-xl md:font-bold md:mb-5 text-lg font-bold mb-5 mt-5">Customer Address</h1>
+          <h1 className="md:text-xl md:font-bold md:mb-5 text-lg font-bold mb-5 mt-5">
+            Customer Address
+          </h1>
           <FormField
             control={form.control}
             name="country"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Address
                 </FormLabel>
                 <FormControl>
                   <Input required {...field} className="md:w-[500px]" />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -281,13 +335,14 @@ export default function CustomerForm() {
             control={form.control}
             name="city"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   City
                 </FormLabel>
                 <FormControl>
                   <Input required {...field} className="md:w-[500px]" />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -295,13 +350,14 @@ export default function CustomerForm() {
             control={form.control}
             name="state"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   State
                 </FormLabel>
                 <FormControl>
                   <Input required {...field} className="md:w-[500px]" />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -309,13 +365,14 @@ export default function CustomerForm() {
             control={form.control}
             name="zipCode"
             render={({ field }) => (
-              <FormItem className="md:flex md:items-center">
+              <FormItem className="md:flex md:flex-col md:items-start">
                 <FormLabel className="md:w-48 md:text-lg font-light">
                   Zip Code
                 </FormLabel>
                 <FormControl>
                   <Input required {...field} className="md:w-[500px]" />
                 </FormControl>
+                <FormMessage className="text-red-600 mt-1" />
               </FormItem>
             )}
           />
@@ -363,8 +420,13 @@ export default function CustomerForm() {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex flex-row gap-5">
-                <AlertDialogCancel className="w-full h-full">Stay</AlertDialogCancel>
-                <AlertDialogAction className="w-full h-full" onClick={handleCancel}>
+                <AlertDialogCancel className="w-full h-full">
+                  Stay
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className="w-full h-full"
+                  onClick={handleCancel}
+                >
                   Discard
                 </AlertDialogAction>
               </AlertDialogFooter>

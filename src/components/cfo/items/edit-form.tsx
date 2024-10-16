@@ -41,7 +41,7 @@ import { CircleHelp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { getItem, editItem } from "@/actions/cfo/item.action";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, formatNumberForInput } from "@/lib/utils";
 
 const formSchema = z.object({
   type: z.string({
@@ -243,7 +243,7 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
                   onChange={(e) => {
                     const rawValue = e.target.value.replace(/[^0-9]/g, "");
                     const numValue = parseInt(rawValue, 10);
-                    setDisplayValue(formatNumber(numValue));
+                    setDisplayValue(formatNumberForInput(numValue));
                     field.onChange(numValue);
                   }}
                 />

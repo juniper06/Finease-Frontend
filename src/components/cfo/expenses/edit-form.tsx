@@ -154,30 +154,33 @@ export const EditExpensesForm = ({ expensesId }: { expensesId: string }) => {
         });
         return;
       }
-
+  
       const expensesData = {
         ...values,
         userId: user.id,
-        categoryId: parseInt(values.categoryId),
+        category: { id: parseInt(values.categoryId) }, // Use category object instead of categoryId
         transactionDate: new Date(values.transactionDate).toISOString(),
       };
-
+  
+      console.log('Expenses data to be sent:', expensesData); // For debugging
+  
       const response = await editExpenses(expensesId, expensesData);
       if (response.error) {
         toast({
-          description: response.error,
+          description: `Failed to update expense: ${response.error}`,
         });
       } else {
         toast({
           description: "Expenses updated successfully!",
         });
         form.reset();
+        setIsDialogOpen(false);
         router.push("/expenses-tracking");
       }
     } catch (error) {
       console.error("Failed to update expenses:", error);
       toast({
-        description: "Failed to update expense.",
+        description: "An unexpected error occurred while updating the expense.",
       });
     }
   };

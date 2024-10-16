@@ -71,12 +71,12 @@ export default function Layout({ children }: LayoutProps) {
   // Conditionally render navbar links based on user data
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
+      <div className="hidden border-r  md:block bg-[#014a97]">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold ">
-              <Package2 className="h-6 w-6" />
-              <span className="md:text-2xl">FinEase</span>
+              <Package2 className="h-6 w-6 bg-white" />
+              <span className="md:text-2xl text-white">FinEase</span>
             </Link>
           </div>
           <div className="flex-1">
@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
                         key={link.href}
                         href={link.href}
                         className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-foreground ${
-                          pathname === link.href ? "text-white bg-primary" : "text-muted-foreground"
+                          pathname === link.href ? "text-white bg-primary" : "text-white"
                         }`}
                       >
                         <link.icon className="h-6 w-6" />
@@ -102,7 +102,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </div>
       <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 bg-[#014a97]">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -113,7 +113,7 @@ export default function Layout({ children }: LayoutProps) {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-2 text-lg font-medium">
                 <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
-                  <Package2 className="h-6 w-6" />
+                  <Package2 className="h-6 w-6 " />
                   <span className="sr-only">FinEase</span>
                 </Link>
                 {user &&
@@ -134,20 +134,20 @@ export default function Layout({ children }: LayoutProps) {
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1" />
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="default" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
+                <CircleUser className="h-5 w-5 color-white" />
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem> */}
+              {/* <DropdownMenuSeparator /> */}
               <DropdownMenuItem>
                 <Button variant="ghost" onClick={() => signOut()}>
                   Logout

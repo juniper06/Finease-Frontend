@@ -154,13 +154,16 @@ export async function getCFOsForStartup(startupId: number) {
 
 export type Startup = {
   [x: string]: any;
-  id: number; // Changed from string to number
-  startupName: string;
-  startupDescription: string;
-  startupType: string;
+  id: number; 
+  companyName: string;
+  companyDescription: string;
   phoneNumber: string;
   contactEmail: string;
   location: string;
   startupCode: string;
-  ceoId: number; // Added ceoId
+  ceoId: number;
+  industry: string;
+  streetAddress: string;
+  city: string;
+  state: string;
 };

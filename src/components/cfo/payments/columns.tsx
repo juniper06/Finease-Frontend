@@ -43,9 +43,9 @@ const ActionCell = ({ paymentRecord, onDelete }: { paymentRecord: Payment; onDel
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href={`/payments-received/edit-payments-received/${paymentRecord.id}`}>
+            {/* <Link href={`/payments-received/edit-payments-received/${paymentRecord.id}`}>
               Edit
-            </Link>
+            </Link> */}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsAlertOpen(true)}>
             Delete

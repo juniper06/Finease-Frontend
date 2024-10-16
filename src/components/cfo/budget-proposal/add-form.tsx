@@ -8,7 +8,12 @@ import { useEffect, useState } from "react";
 import { getUserData, User } from "@/actions/auth/user.action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatNumber, cn, generateStartupCode, formatNumberForInput } from "@/lib/utils";
+import {
+  formatNumber,
+  cn,
+  generateStartupCode,
+  formatNumberForInput,
+} from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon, CirclePlus, Trash2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -53,6 +58,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { addBudgetProposal } from "@/actions/cfo/budget-proposal.action";
+import { render } from "react-dom";
 
 const formSchema = z.object({
   proposalTitle: z.string({
@@ -388,7 +394,7 @@ export default function BudgetProposalForm() {
                       onSelect={(date) =>
                         field.onChange(date ? date.toISOString() : "")
                       }
-                      disabled={(date) => date < new Date("1900-01-01")}
+                      disabled={(date) => date < new Date()} // Disable past dates
                       initialFocus
                     />
                   </PopoverContent>

@@ -55,6 +55,7 @@ import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
 import { Item, getAllItems, getItem } from "@/actions/cfo/item.action";
 import { addInvoice } from "@/actions/cfo/invoice.action";
+import { render } from "react-dom";
 
 const formSchema = z.object({
   customerId: z.string({
@@ -280,7 +281,7 @@ export const AddInvoiceForm = () => {
                 Invoice #
               </FormLabel>
               <FormControl>
-                <Input required {...field} className="md:w-[400px]" readOnly/>
+                <Input required {...field} className="md:w-[400px]" readOnly />
               </FormControl>
             </FormItem>
           )}
@@ -319,7 +320,7 @@ export const AddInvoiceForm = () => {
                     onSelect={(date) =>
                       field.onChange(date ? date.toISOString() : "")
                     }
-                    disabled={(date) => date < new Date("1900-01-01")}
+                    disabled={(date) => date < new Date()} // Disable past dates
                   />
                 </PopoverContent>
               </Popover>

@@ -1,5 +1,14 @@
 "use client";
-import { AwaitedReactNode, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
+import {
+  AwaitedReactNode,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useEffect,
+  useState,
+} from "react";
 import { Separator } from "@/components/ui/separator";
 import {
   BriefcaseBusiness,
@@ -80,7 +89,7 @@ export const ViewStartup = ({ id }: Props) => {
     <div className="flex flex-col">
       <div>
         <h1 className="text-lg font-semibold md:text-2xl w-full mb-5">
-          {startup.startupName}
+          {startup.companyName}
         </h1>
         <Separator />
         <div className="flex gap-7 my-5">
@@ -91,7 +100,9 @@ export const ViewStartup = ({ id }: Props) => {
               </div>
               <div className="w-full">
                 <h5 className="font-semibold text-[25px]">
-                  {/* {startup.ceo.firstName} {startup.ceo.lastName} */}
+                  {startup?.ceo?.firstName
+                    ? `${startup.ceo.firstName} ${startup.ceo.lastName}`
+                    : "CEO Name Unavailable"}
                 </h5>
                 <span className="font-extralight text-primary">
                   Chief Executive Officer
@@ -104,10 +115,10 @@ export const ViewStartup = ({ id }: Props) => {
               </div>
               <div className="w-full">
                 <h5 className="font-semibold text-[25px] text-primary">
-                  {startup.startupName}
+                  {startup.companyName}
                 </h5>
                 <span className="font-extralight">
-                  {startup.startupDescription}
+                  {startup.companyDescription}
                 </span>
               </div>
             </div>
@@ -129,9 +140,9 @@ export const ViewStartup = ({ id }: Props) => {
               </div>
               <div className="w-full">
                 <h2 className="text-foreground">
-                  <div>Startup Type</div>
+                  <div>Industry</div>
                 </h2>
-                <span className="text-primary ">{startup.startupType}</span>
+                <span className="text-primary ">{startup.industry}</span>
               </div>
             </div>
             <div className="flex justify-center items-center">
@@ -164,13 +175,15 @@ export const ViewStartup = ({ id }: Props) => {
                 <h2 className="text-foreground">
                   <div>Location Address</div>
                 </h2>
-                <span className="text-primary ">{startup.location}</span>
+                <span className="text-primary ">
+                  {startup.streetAddress}, {startup.city}, {startup.state}
+                </span>
               </div>
             </div>
           </div>
           <div className="w-full">
             <h1 className="md:text-[25px]">Chief Financial Officers</h1>
-            {/* <Table>
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -178,16 +191,20 @@ export const ViewStartup = ({ id }: Props) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {startup.cfoUsers.map((user: { firstName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; lastName: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; email: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined; }, index: Key | null | undefined) => (
-                  <TableRow key={index}>
+                {startup.cfo ? (
+                  <TableRow>
                     <TableCell>
-                      {user.firstName} {user.lastName}
+                      {startup.cfo.firstName} {startup.cfo.lastName}
                     </TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{startup.cfo.email}</TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={2}>No CFO assigned</TableCell>
+                  </TableRow>
+                )}
               </TableBody>
-            </Table> */}
+            </Table>
           </div>
         </div>
       </div>
@@ -201,7 +218,7 @@ export const ViewStartup = ({ id }: Props) => {
         <FinancialForecasting startupId={startup.id} />
         <TotalGraph startupId={startup.id} />
         <RecentSalesTable startupId={startup.id} />
-        <RecentExpensesTable startupId={startup.id}/>
+        <RecentExpensesTable startupId={startup.id} />
       </div>
     </div>
   );

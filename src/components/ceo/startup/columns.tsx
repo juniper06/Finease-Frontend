@@ -67,23 +67,23 @@ const ActionCell = ({ startup, onDelete }: { startup: Startup; onDelete: (id: nu
 
 export const startupsColumns: ColumnDef<Startup>[] = [
   {
-    accessorKey: "startupName",
-    header: "Startup Name",
+    accessorKey: "companyName",
+    header: "Company Name",
     cell: ({ row }) => (
       <Link href={`/ceo/startups/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {row.getValue("startupName")}
+          {row.getValue("companyName")}
         </div>
       </Link>
     ),
   },
   {
-    accessorKey: "startupType",
-    header: "Startup Type",
+    accessorKey: "industry",
+    header: "Industry",
     cell: ({ row }) => (
       <Link href={`/ceo/startups/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {row.getValue("startupType")}
+          {row.getValue("industry")}
         </div>
       </Link>
     ),
@@ -106,17 +106,6 @@ export const startupsColumns: ColumnDef<Startup>[] = [
       <Link href={`/ceo/startups/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
           {row.getValue("contactEmail")}
-        </div>
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "location",
-    header: "Location",
-    cell: ({ row }) => (
-      <Link href={`/ceo/startups/view-startup/${row.original.id}`}>
-        <div className="w-full h-full cursor-pointer">
-          {row.getValue("location")}
         </div>
       </Link>
     ),

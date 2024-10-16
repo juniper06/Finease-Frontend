@@ -43,9 +43,9 @@ const ActionCell = ({ expense, onDelete }: { expense: Expenses; onDelete: (id: s
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href={`/expenses-tracking/edit-expenses/${expense.id}`}>
+            {/* <Link href={`/expenses-tracking/edit-expenses/${expense.id}`}>
               Edit
-            </Link>
+            </Link> */}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsAlertOpen(true)}>
             Delete

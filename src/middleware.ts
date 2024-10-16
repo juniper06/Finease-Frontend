@@ -8,7 +8,7 @@ import {
   publicRoute,
 } from "@/lib/routes";
 
-type UserRole = 'CFO' | 'CEO';
+type UserRole = 'CFO' | 'CEO' | "GUEST";
 
 interface CustomSession {
   user: {
@@ -19,6 +19,7 @@ interface CustomSession {
 const roleProtectedRoutes: Record<UserRole, string[]> = {
   CFO: ["/", "/customers", "/invoices", "/items", "/payments-received", "/expenses-tracking"],
   CEO: ["/ceo", "/ceo/forecasting", "/ceo/startup"],
+  GUEST: ["/guest"],
 };
 
 export default auth((req) => {
@@ -36,7 +37,7 @@ export default auth((req) => {
   }
 
   if (isAuthRoute) {
-    if (isLoggedIn) {
+    if (isLoggedIn && nextUrl.pathname !== "/sso") {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return;

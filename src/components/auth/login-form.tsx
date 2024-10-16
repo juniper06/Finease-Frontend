@@ -132,7 +132,7 @@ export default function LoginForm() {
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="underline">
+              <Link href="https://startupvest-front-ten.vercel.app/signup" className="underline">
                 Sign up
               </Link>
             </div>

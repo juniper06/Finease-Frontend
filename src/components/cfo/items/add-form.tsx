@@ -45,19 +45,45 @@ import { addItem } from "@/actions/cfo/item.action";
 import { formatNumber, formatNumberForInput } from "@/lib/utils";
 
 const formSchema = z.object({
-  type: z.string({
-    message: "Type is Required",
-  }),
-  name: z.string({
-    message: "Item Name is Required",
-  }),
-  unit: z.string({
-    message: "Unit is Required",
-  }),
-  description: z.string({
-    message: "Description is Required",
-  }),
-  price: z.coerce.number(),
+  type: z
+    .string({
+      message: "Type is Required",
+    })
+    .refine((val) => ["Goods", "Service"].includes(val), {
+      message: "Type must be either 'Goods' or 'Service'",
+    }),
+  name: z
+    .string({
+      message: "Item Name is Required",
+    })
+    .min(3, {
+      message: "Item Name must be at least 3 characters long",
+    }),
+  unit: z
+    .string({
+      message: "Unit is Required",
+    })
+    .refine(
+      (val) =>
+        ["Kgs", "Gms", "Box", "Mtr", "Unt", "Pcs", "Prs", "None"].includes(val),
+      {
+        message: "Invalid unit selected",
+      }
+    ),
+  description: z
+    .string({
+      message: "Description is Required",
+    })
+    .min(5, {
+      message: "Description must be at least 5 characters long",
+    }),
+  price: z.coerce
+    .number({
+      message: "Price must be a valid number",
+    })
+    .min(1, {
+      message: "Price must be greater than 0",
+    }),
 });
 
 export const AddItemForm = () => {
@@ -137,7 +163,7 @@ export const AddItemForm = () => {
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
+            <FormItem className="md:flex md:flex-col md:items-start">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
                 Type{" "}
                 <HoverCard>
@@ -162,6 +188,7 @@ export const AddItemForm = () => {
                   <SelectItem value="Service">Service</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage className="text-red-600 mt-1" />
             </FormItem>
           )}
         />
@@ -169,13 +196,14 @@ export const AddItemForm = () => {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
+            <FormItem className="md:flex md:flex-col md:items-start">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
                 Item Name
               </FormLabel>
               <FormControl>
                 <Input className="md:w-[400px]" required {...field} />
               </FormControl>
+              <FormMessage className="text-red-600 mt-1" />
             </FormItem>
           )}
         />
@@ -183,7 +211,7 @@ export const AddItemForm = () => {
           control={form.control}
           name="unit"
           render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
+            <FormItem className="md:flex md:flex-col md:items-start">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
                 Unit{" "}
                 <HoverCard>
@@ -213,6 +241,7 @@ export const AddItemForm = () => {
                   <SelectItem value="None">None</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage className="text-red-600 mt-1" />
             </FormItem>
           )}
         />
@@ -220,7 +249,7 @@ export const AddItemForm = () => {
           control={form.control}
           name="price"
           render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
+            <FormItem className="md:flex md:flex-col md:items-start">
               <FormLabel className="md:w-60 md:text-lg font-light">
                 Selling Price ( ₱ )
               </FormLabel>
@@ -238,6 +267,7 @@ export const AddItemForm = () => {
                   }}
                 />
               </FormControl>
+              <FormMessage className="text-red-600 mt-1" />
             </FormItem>
           )}
         />
@@ -245,13 +275,14 @@ export const AddItemForm = () => {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
+            <FormItem className="md:flex md:flex-col md:items-start">
               <FormLabel className="md:w-60 md:text-lg font-light">
                 Description
               </FormLabel>
               <FormControl>
                 <Textarea required {...field} className="md:w-[400px]" />
               </FormControl>
+              <FormMessage className="text-red-600 mt-1" />
             </FormItem>
           )}
         />
