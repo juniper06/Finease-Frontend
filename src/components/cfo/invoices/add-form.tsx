@@ -55,7 +55,6 @@ import { Customer, getAllCustomers } from "@/actions/cfo/customer.action";
 import { User, getUserData } from "@/actions/auth/user.action";
 import { Item, getAllItems, getItem } from "@/actions/cfo/item.action";
 import { addInvoice } from "@/actions/cfo/invoice.action";
-import { render } from "react-dom";
 
 const formSchema = z.object({
   customerId: z.string({

@@ -58,7 +58,6 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { addBudgetProposal } from "@/actions/cfo/budget-proposal.action";
-import { render } from "react-dom";
 
 const formSchema = z.object({
   proposalTitle: z.string({

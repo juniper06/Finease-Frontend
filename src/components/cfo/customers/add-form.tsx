@@ -35,7 +35,6 @@ import { User, getUserData } from "@/actions/auth/user.action";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addCustomer } from "@/actions/cfo/customer.action";
-import { render } from "react-dom";
 
 const formSchema = z.object({
   type: z.string().nonempty({ message: "Please select a Customer Type." }),
