@@ -25,29 +25,46 @@ export const {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+
+        // for SSO
+        jwt: { label: "JWT", type: "text" },
+        userId: { label: "User ID", type: "text" },
+        role: { label: "Role", type: "text" },
       },
       authorize: async (credentials) => {
-        const { email, password } = credentials;
-        const res = await fetch(`${process.env.SERVER_API}/users/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-          }),
-        });
-        const result = await res.json();
-        if (res.ok && result.jwt) {
-          console.log("JWT received: ", result.jwt);
+        const { email, password, jwt, userId, role } = credentials;
+        if(email && password) {
+          const res = await fetch(`${process.env.SERVER_API}/users/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+          });
+          const result = await res.json();
+          if (res.ok && result.jwt) {
+            console.log("JWT received: ", result.jwt);
+            return {
+              id: result.userId,
+              email: email || result.email,
+              role: result.role,
+              token: result.jwt,
+            };
+          }
+        }
+        else if(jwt && userId) {
+          console.log("Logging in via SSO from Startup Vest");
           return {
-            id: result.userId,
-            email: result.email,
-            role: result.role,
-            token: result.jwt,
+            id: Number(userId),
+            email: email,
+            role: role,
+            token: jwt,
           };
         }
+
         throw new AuthError("Invalid Credential");
       },
     }),
