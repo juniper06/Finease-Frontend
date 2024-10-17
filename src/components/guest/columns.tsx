@@ -6,23 +6,23 @@ import { Startup } from "@/actions/ceo/startup.action";
 
 export const startupsColumns: ColumnDef<Startup>[] = [
   {
-    accessorKey: "startupName",
+    accessorKey: "companyName",
     header: "Startup Name",
     cell: ({ row }) => (
       <Link href={`/guest/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {row.getValue("startupName")}
+          {row.getValue("companyName")}
         </div>
       </Link>
     ),
   },
   {
-    accessorKey: "startupType",
-    header: "Startup Type",
+    accessorKey: "industry",
+    header: "Startup Industry",
     cell: ({ row }) => (
       <Link href={`/guest/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {row.getValue("startupType")}
+          {row.getValue("industry")}
         </div>
       </Link>
     ),
@@ -50,12 +50,12 @@ export const startupsColumns: ColumnDef<Startup>[] = [
     ),
   },
   {
-    accessorKey: "location",
+    accessorKey: "locationName",
     header: "Location",
     cell: ({ row }) => (
       <Link href={`/guest/view-startup/${row.original.id}`}>
         <div className="w-full h-full cursor-pointer">
-          {row.getValue("location")}
+          {row.getValue("locationName")}
         </div>
       </Link>
     ),

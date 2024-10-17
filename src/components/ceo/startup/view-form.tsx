@@ -176,7 +176,7 @@ export const ViewStartup = ({ id }: Props) => {
                   <div>Location Address</div>
                 </h2>
                 <span className="text-primary ">
-                  {startup.streetAddress}, {startup.city}, {startup.state}
+                  {startup.locationName}
                 </span>
               </div>
             </div>

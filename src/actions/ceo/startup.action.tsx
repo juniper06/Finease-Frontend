@@ -159,11 +159,8 @@ export type Startup = {
   companyDescription: string;
   phoneNumber: string;
   contactEmail: string;
-  location: string;
+  locationName: string;
   startupCode: string;
   ceoId: number;
   industry: string;
-  streetAddress: string;
-  city: string;
-  state: string;
 };
