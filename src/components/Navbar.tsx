@@ -113,7 +113,6 @@ export default function Layout({ children }: LayoutProps) {
             <SheetContent side="left" className="flex flex-col">
               <nav className="grid gap-2 text-lg font-medium">
                 <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
-                  <Package2 className="h-6 w-6" />
                   <span className="sr-only">FinEase</span>
                 </Link>
                 {user &&
@@ -134,11 +133,11 @@ export default function Layout({ children }: LayoutProps) {
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1" />
-          {/* <ModeToggle /> */}
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="default" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5 color-white" />
+                <CircleUser className="h-5 w-5" />
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
