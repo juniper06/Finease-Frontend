@@ -297,7 +297,7 @@ export const EditInvoiceForm = ({ invoiceId }: {invoiceId: string}) => {
               Invoice #
             </FormLabel>
             <FormControl>
-              <Input required {...field} className="md:w-[400px]" />
+              <Input disabled required {...field} className="md:w-[400px]" />
             </FormControl>
           </FormItem>
         )}

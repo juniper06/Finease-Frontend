@@ -77,12 +77,16 @@ const formSchema = z.object({
   paymentNumber: z.string({
     message: "Payment Number is Required",
   }),
-  payments: z.array(
-    z.object({
-      invoiceId: z.number(),
-      amount: z.number(),
-    })
-  ),
+  payments: z
+    .array(
+      z.object({
+        invoiceId: z.number(),
+        amount: z.number().min(1, { message: "Amount must be greater than 0" }), // Ensure amount is > 0
+      })
+    )
+    .refine((payments) => payments.some((payment) => payment.amount > 0), {
+      message: "At least one payment amount must be greater than 0",
+    }),
 });
 
 export const AddPaymentRecord = () => {
@@ -398,34 +402,24 @@ export const AddPaymentRecord = () => {
                         <FormControl>
                           <Input
                             className={`text-right md:w-[200px] ${
-                              field.value === invoice.balanceDue
-                                ? "border-green-500"
-                                : ""
+                              field.value === 0 ? "border-red-500" : "" // Highlight zero values in red
                             }`}
                             {...field}
-                            // Format the value for display
                             value={formatNumberForInput(field.value)}
-                            // Handle onChange with number formatting
                             onChange={(e) => {
                               const rawValue = e.target.value.replace(/,/g, "");
                               let newAmount = parseFloat(rawValue) || 0;
 
-                              // Ensure the amount doesn't exceed the balance due
                               newAmount = Math.min(
                                 newAmount,
                                 invoice.balanceDue
                               );
-
-                              // Update the field with the raw number (no formatting)
                               field.onChange(newAmount);
-
-                              // Set the corresponding invoice ID
                               form.setValue(
                                 `payments.${index}.invoiceId`,
                                 Number(invoice.id)
                               );
 
-                              // Calculate the total payment amount
                               const currentPayments =
                                 form.getValues("payments");
                               const newTotal = currentPayments.reduce(
@@ -434,10 +428,9 @@ export const AddPaymentRecord = () => {
                               );
                               setTotal(newTotal);
                             }}
-                            // Handle blur to remove any non-numeric input
                             onBlur={(e) => {
                               if (!e.target.value) {
-                                field.onChange(0); // Reset the value to 0 if the input is empty
+                                field.onChange(0);
                               }
                             }}
                           />

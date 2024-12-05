@@ -75,7 +75,7 @@ export default function TotalExpenses() {
           getAllProjects(user.id),
         ]);
 
-        // Check if expensesResult and projectsResult are arrays
+        // Check if results are arrays
         if (!Array.isArray(expensesResult) || !Array.isArray(projectsResult)) {
           throw new Error(
             (expensesResult as any).error ||
@@ -110,12 +110,23 @@ export default function TotalExpenses() {
           return { ...monthData, expenses: totalMonthExpenses };
         });
 
+        // Get the current month
+        const currentMonth = new Date().getMonth();
+
+        // Reset current month expenses to 0 if there are no data
+        if (monthlyData[currentMonth]?.expenses === undefined) {
+          monthlyData[currentMonth].expenses = 0;
+        }
+
         setMonthlyExpenses(monthlyData);
+
+        // Calculate total expenses for the year
         const totalYearExpenses = monthlyData.reduce(
           (acc, month) => acc + month.expenses,
           0
         );
-        setTotalExpenses(totalYearExpenses);
+
+        setTotalExpenses(monthlyData[currentMonth]?.expenses || 0); // Current month's expenses
       } catch (error) {
         console.error("Failed to fetch expenses data:", error);
         setMonthlyExpenses(initialChartData);
@@ -124,6 +135,7 @@ export default function TotalExpenses() {
         setIsLoading(false);
       }
     }
+
     fetchExpensesAndProjects();
   }, [user, toast]);
 

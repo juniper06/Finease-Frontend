@@ -10,6 +10,7 @@ export default async function AddStartupPage() {
         </h1>
       </div>
       <Separator/>
+      <h1 className="text-lg font-semibold md:text-xl w-full">Startup Information</h1>
       <AddStartupForm/>
     </>
   );

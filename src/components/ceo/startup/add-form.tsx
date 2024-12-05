@@ -28,18 +28,40 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import { User, getUserData } from "@/actions/auth/user.action";
-import { generateStartupCode } from "@/lib/utils";
+import { cn, generateStartupCode } from "@/lib/utils";
 import { addStartup } from "@/actions/ceo/startup.action";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
-  startupName: z.string({
+  companyName: z.string({
     message: "Startup Name is Required",
   }),
-  startupDescription: z.string({
+  companyDescription: z.string({
     message: "Startup Description is Required",
   }),
-  startupType: z.string({
+  foundedDate: z.string({
+    message: "Startup founded date is Required",
+  }),
+  typeOfCompany: z.string({
     message: "Startup Type is Required",
+  }),
+  numberOfEmployees: z.string({
+    message: "No. of Employees is Required",
   }),
   phoneNumber: z.string({
     message: "Phone Number is Required",
@@ -47,9 +69,14 @@ const formSchema = z.object({
   contactEmail: z.string({
     message: "Email is Required",
   }),
-  location: z.string({
-    message: "Location is Required",
+  industry: z.string({
+    message: "Industry is Required",
   }),
+  website: z.string().optional(),
+  facebook: z.string().optional(),
+  twitter: z.string().optional(),
+  instagram: z.string().optional(),
+  linkedIn: z.string().optional(),
   startupCode: z.string({
     message: "Startup Code is Required",
   }),
@@ -64,12 +91,19 @@ export const AddStartupForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      startupName: "",
-      startupDescription: "",
-      startupType: "",
+      companyName: "",
+      companyDescription: "",
+      foundedDate: "",
+      typeOfCompany: "",
+      numberOfEmployees: "",
       phoneNumber: "",
       contactEmail: "",
-      location: "",
+      industry: "",
+      website: "",
+      facebook: "",
+      twitter: "",
+      instagram: "",
+      linkedIn: "",
       startupCode: generateStartupCode(),
     },
   });
@@ -135,7 +169,7 @@ export const AddStartupForm = () => {
       >
         <FormField
           control={form.control}
-          name="startupName"
+          name="companyName"
           render={({ field }) => (
             <FormItem className="md:flex md:items-center">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
@@ -149,21 +183,7 @@ export const AddStartupForm = () => {
         />
         <FormField
           control={form.control}
-          name="startupType"
-          render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
-              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
-                Startup Type
-              </FormLabel>
-              <FormControl>
-                <Input className="md:w-[400px]" required {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="startupDescription"
+          name="companyDescription"
           render={({ field }) => (
             <FormItem className="md:flex md:items-center">
               <FormLabel className="md:w-60 md:text-lg font-light">
@@ -175,20 +195,128 @@ export const AddStartupForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem className="md:flex md:items-center">
-              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
-                Phone Number
-              </FormLabel>
-              <FormControl>
-                <Input className="md:w-[400px]" required {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <div className="flex items-end gap-x-5">
+          <FormField
+            control={form.control}
+            name="foundedDate"
+            render={({ field }) => (
+              <FormItem className="md:flex md:items-center">
+                <FormLabel className="md:w-60 md:text-lg font-light">
+                  Founded Date
+                </FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "md:w-[400px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(parseISO(field.value), "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value ? parseISO(field.value) : undefined}
+                      onSelect={(date) =>
+                        field.onChange(date ? date.toISOString() : "")
+                      }
+                      disabled={(date) => date < new Date("1900-01-01")}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="typeOfCompany"
+            render={({ field }) => (
+              <FormItem className="md:flex md:items-center">
+                <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                  Type of Company
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="md:w-[400px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a company type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="profit">Profit</SelectItem>
+                    <SelectItem value="non-profit">Non-Profit</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-600 mt-1" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex items-end gap-x-5">
+          <FormField
+            control={form.control}
+            name="numberOfEmployees"
+            render={({ field }) => (
+              <FormItem className="md:flex md:items-center">
+                <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                  No. of Employees
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl className="md:w-[400px]">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select No. of employees" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="lessthan10">Less than 10</SelectItem>
+                    <SelectItem value="tenTofifty">10 - 50</SelectItem>
+                    <SelectItem value="fiftyTohundred">50 - 100</SelectItem>
+                    <SelectItem value="hundredTotwohundred">
+                      100 - 200
+                    </SelectItem>
+                    <SelectItem value="twohundredTofivehundred">
+                      200 - 500
+                    </SelectItem>
+                    <SelectItem value="abovethousand">
+                      1000 and above
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-red-600 mt-1" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem className="md:flex md:items-center">
+                <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                  Phone Number
+                </FormLabel>
+                <FormControl>
+                  <Input className="md:w-[400px]" required {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="contactEmail"
@@ -205,28 +333,141 @@ export const AddStartupForm = () => {
         />
         <FormField
           control={form.control}
-          name="location"
+          name="industry"
           render={({ field }) => (
             <FormItem className="md:flex md:items-center">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
-                Location
+                Industry
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl className="md:w-[400px]">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an Industry" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {[
+                    "Artificial Intelligence",
+                    "Software",
+                    "Hardware",
+                    "Cybersecurity",
+                    "Blockchain",
+                    "Gaming",
+                    "Biotechnology",
+                    "Space",
+                    "Renewable Energy",
+                    "Technology",
+                    "Telecommunications",
+                    "E-commerce",
+                    "Media",
+                    "Entertainment",
+                    "Finance",
+                    "Healthcare",
+                    "Retail",
+                    "Automotive",
+                    "Education",
+                    "Hospitality",
+                    "Manufacturing",
+                    "Real Estate",
+                    "Food and Beverage",
+                    "Travel",
+                    "Fashion",
+                    "Energy",
+                    "Construction",
+                    "Agriculture",
+                    "Transportation",
+                    "Pharmaceuticals",
+                    "Environmental",
+                    "Fitness",
+                    "Consulting",
+                    "Government",
+                    "Non-profit",
+                    "Insurance",
+                    "Legal",
+                    "Marketing",
+                    "Sports",
+                    "Beauty",
+                    "Design",
+                  ].map((industry) => (
+                    <SelectItem key={industry} value={industry}>
+                      {industry}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-red-600 mt-1" />
+            </FormItem>
+          )}
+        />
+
+        <Separator />
+        <h1 className="text-lg font-semibold md:text-xl w-full">Links</h1>
+        <FormField
+          control={form.control}
+          name="website"
+          render={({ field }) => (
+            <FormItem className="md:flex md:items-center">
+              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                Website
               </FormLabel>
               <FormControl>
-                <Input className="md:w-[400px]" required {...field} />
+                <Input className="md:w-[400px]" {...field} />
               </FormControl>
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="startupCode"
+          name="facebook"
           render={({ field }) => (
             <FormItem className="md:flex md:items-center">
               <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
-                Startup Code
+                Facebook
               </FormLabel>
               <FormControl>
-                <Input className="md:w-[400px]" required readOnly {...field} />
+                <Input className="md:w-[400px]" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="twitter"
+          render={({ field }) => (
+            <FormItem className="md:flex md:items-center">
+              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                Twitter
+              </FormLabel>
+              <FormControl>
+                <Input className="md:w-[400px]" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="instagram"
+          render={({ field }) => (
+            <FormItem className="md:flex md:items-center">
+              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                Instagram
+              </FormLabel>
+              <FormControl>
+                <Input className="md:w-[400px]" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="linkedIn"
+          render={({ field }) => (
+            <FormItem className="md:flex md:items-center">
+              <FormLabel className="md:w-60 md:text-lg font-light flex items-center gap-2">
+                LinkedIn
+              </FormLabel>
+              <FormControl>
+                <Input className="md:w-[400px]" {...field} />
               </FormControl>
             </FormItem>
           )}

@@ -84,13 +84,23 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
       const fetchData = async () => {
         try {
           const fetchedItem = await getItem(itemId);
+
           if (fetchedItem.error) {
             toast({
               description: fetchedItem.error,
             });
           } else {
-            setItem(fetchedItem);
-            form.reset(fetchedItem);
+            // Validate and sanitize the fetched data
+            const sanitizedItem = formSchema.parse({
+              type: fetchedItem.type || "",
+              name: fetchedItem.name || "",
+              unit: fetchedItem.unit || "",
+              description: fetchedItem.description || "",
+              price: fetchedItem.price || 0,
+            });
+
+            setItem(sanitizedItem);
+            form.reset(sanitizedItem);
           }
         } catch (error) {
           console.error("Failed to fetch item", error);
@@ -162,7 +172,7 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
                   </HoverCardContent>
                 </HoverCard>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value || item.type}>
                 <FormControl className="md:w-[400px]">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a transaction type" />
@@ -185,7 +195,18 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
                 Item Name
               </FormLabel>
               <FormControl>
-                <Input className="md:w-[400px]" required {...field} />
+                <Input
+                  className="md:w-[400px]"
+                  required
+                  {...field}
+                  value={displayValue || field.value}
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/[^0-9]/g, "");
+                    const numValue = parseInt(rawValue, 10);
+                    setDisplayValue(formatNumberForInput(numValue));
+                    field.onChange(numValue);
+                  }}
+                />
               </FormControl>
             </FormItem>
           )}
@@ -207,7 +228,7 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
                   </HoverCardContent>
                 </HoverCard>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value || item.unit}>
                 <FormControl className="md:w-[400px]">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a unit type" />
@@ -239,7 +260,7 @@ const EditItemForm = ({ itemId }: { itemId: string }) => {
                   className="md:w-[400px]"
                   required
                   {...field}
-                  value={displayValue}
+                  value={displayValue || field.value}
                   onChange={(e) => {
                     const rawValue = e.target.value.replace(/[^0-9]/g, "");
                     const numValue = parseInt(rawValue, 10);

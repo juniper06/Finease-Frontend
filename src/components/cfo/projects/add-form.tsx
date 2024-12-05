@@ -48,7 +48,7 @@ import {
 import { CirclePlus, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { addProject } from "@/actions/cfo/project.action";
-import { formatNumber, formatNumberForInput } from "@/lib/utils";
+import { formatNumber, formatNumberForInput, generateStartupCode } from "@/lib/utils";
 
 const formSchema = z.object({
   projectName: z.string({
@@ -57,7 +57,7 @@ const formSchema = z.object({
 
   projectCode: z.string({
     message: "Project Code is Required!",
-  }).length(6, "Project Code must be exactly 6 characters"),
+  }),
 
   customerId: z.string({
     message: "Customer is Required!",
@@ -100,7 +100,7 @@ export const AddProjectForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectName: "",
-      projectCode: "",
+      projectCode: generateStartupCode(),
       customerId: "",
       billingMethod: "",
       description: "",

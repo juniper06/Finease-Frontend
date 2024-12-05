@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 
 export async function addStartup(values: any) {
   const session = await auth();
-  const response = await fetch(`${process.env.SERVER_API}/startup`, {
+  const response = await fetch(`${process.env.SERVER_API}/startups`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${session?.user.token}`,
