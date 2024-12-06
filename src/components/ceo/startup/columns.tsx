@@ -33,7 +33,7 @@ const ActionCell = ({ startup, onDelete }: { startup: Startup; onDelete: (id: nu
 
   return (
     <>
-      <DropdownMenu>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -60,7 +60,7 @@ const ActionCell = ({ startup, onDelete }: { startup: Startup; onDelete: (id: nu
             <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog> */}
     </>
   );
 };
@@ -121,17 +121,17 @@ export const startupsColumns: ColumnDef<Startup>[] = [
       </Link>
     ),
   },
-  {
-    id: "actions",
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row, table }) => {
-      const startup = row.original;
-      const { onDelete } = table.options.meta as {
-        onDelete: (id: number) => Promise<void>;
-      };
+  // {
+  //   id: "actions",
+  //   accessorKey: "actions",
+  //   header: "Actions",
+  //   cell: ({ row, table }) => {
+  //     const startup = row.original;
+  //     const { onDelete } = table.options.meta as {
+  //       onDelete: (id: number) => Promise<void>;
+  //     };
 
-      return <ActionCell startup={startup} onDelete={onDelete} />;
-    },
-  },
+  //     return <ActionCell startup={startup} onDelete={onDelete} />;
+  //   },
+  // },
 ];
